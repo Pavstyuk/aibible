@@ -14,30 +14,30 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Cache;
 
-Route::get('/redis-test', function () {
-    try {
-        Redis::set('test_key', 'Hello from Laravel + Redis!');
-        $value = Redis::get('test_key');
+// Route::get('/redis-test', function () {
+//     try {
+//         Redis::set('test_key', 'Hello from Laravel + Redis!');
+//         $value = Redis::get('test_key');
 
-        Cache::put('cache_test', 'Cached value', 600); // 10 минут
-        $cached = Cache::get('cache_test');
+//         Cache::put('cache_test', 'Cached value', 600); // 10 минут
+//         $cached = Cache::get('cache_test');
 
-        Redis::incr('page_views');
-        $views = Redis::get('page_views');
+//         Redis::incr('page_views');
+//         $views = Redis::get('page_views');
 
-        return [
-            'redis_direct' => $value,
-            'cache_driver' => $cached,
-            'page_views' => $views,
-            'status' => 'connected'
-        ];
-    } catch (\Exception $e) {
-        return [
-            'error' => $e->getMessage(),
-            'status' => 'failed'
-        ];
-    }
-});
+//         return [
+//             'redis_direct' => $value,
+//             'cache_driver' => $cached,
+//             'page_views' => $views,
+//             'status' => 'connected'
+//         ];
+//     } catch (\Exception $e) {
+//         return [
+//             'error' => $e->getMessage(),
+//             'status' => 'failed'
+//         ];
+//     }
+// });
 
 Route::prefix('htmx')->group(function () {
     Route::get('/menu-books', [BibleMenuController::class, 'books'])->name('menu-books');
@@ -87,6 +87,7 @@ Route::post('/restore', [RegisterController::class, 'initRestore'])->name('resto
 
 // Route::get('/ai/{translation}/{verse_id}', [AIController::class, 'getCommentsByVerseID'])->name('verse-comments');
 
+Route::get('/policy', [PageController::class, 'policy'])->name('policy');
 Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 
 Route::get('/', [BibleController::class, 'home'])->name('home');
