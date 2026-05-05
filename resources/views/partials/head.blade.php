@@ -3,9 +3,13 @@
 <title>{{ $seo_title }}</title>
 <meta name="description" content="{{ $seo_description }}">
 
-<link rel="stylesheet" href="/assets/fonts/inter-tight/inter-tight.min.css">
+<link rel="preload" href="/assets/fonts/inter-tight/inter-tight.min.css" as="style">
+<link rel="preload" href="/assets/fonts/boxicons/boxicons.min.css" as="style">
+<link rel="preload" href="/assets/css/main.min.css?ver={{ env('APP_VER', time()) }}" as="style">
+<link rel="preload" href="/assets/css/custom.min.css?ver={{ env('APP_VER', time()) }}" as="style">
+
 <link rel="stylesheet" href="/assets/css/main.min.css?ver={{ env('APP_VER', time()) }}">
-<link rel="stylesheet" href="/assets/css/custom.css?ver={{ env('APP_VER', time()) }}">
+<link rel="stylesheet" href="/assets/css/custom.min.css?ver={{ env('APP_VER', time()) }}">
 
 <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
