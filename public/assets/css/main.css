@@ -1197,6 +1197,53 @@ label.required::after {
     color: var(--color-text-error);
 }
 
+button.password-toggle {
+    color: var(--color-main);
+    background-color: transparent;
+    border: none;
+    aspect-ratio: 1/1;
+    height: 3rem;
+    font-size: 1.25rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+button.password-toggle[data-state="hidden"] > .bx-eye-alt {
+    display: none;
+}
+
+button.password-toggle[data-state="visible"] > .bx-eye-closed {
+    display: none;
+}
+
+button.password-toggle:hover {
+    color: var(--color-main-light);
+}
+
+.password-input-toggle:has(+ button.password-toggle) {
+    anchor-name: --pass-input;
+}
+.password-input-toggle-conf:has(+ button.password-toggle) {
+    anchor-name: --pass-input-conf;
+}
+
+.password-input-toggle:has(+ button.password-toggle) + button.password-toggle {
+    position: absolute;
+    position-anchor: --pass-input;
+    position-area: center span-left;
+    z-index: 2;
+}
+
+.password-input-toggle-conf:has(+ button.password-toggle)
+    + button.password-toggle {
+    position: absolute;
+    position-anchor: --pass-input-conf;
+    position-area: center span-left;
+    z-index: 2;
+}
+
 .block {
     display: block;
 }

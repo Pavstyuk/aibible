@@ -6,9 +6,14 @@
                 autocomplete="" required>
         </div>
         <div class="mb-2">
-            <label class="required" for="">{{ __('Пароль') }}</label>
-            <input type="password" name="password" id="login-password" placeholder="{{ __('Пароль') }}" value=""
-                autocomplete="" required>
+            <label class="required" for="login-password">{{ __('Пароль') }}</label>
+            <input class="password-input-toggle" type="password" name="password" id="login-password"
+                placeholder="{{ __('Пароль') }}" value="" autocomplete="" required>
+            <button class="password-toggle" data-state="hidden" role="button"
+                onclick="togglePasswordInput(this, event)">
+                <i class="bx bx-eye-alt"></i>
+                <i class="bx bx-eye-closed"></i>
+            </button>
         </div>
         <div class="mb-2">
             <label class="flex flex-align-center mb-0 ml-0 pl-0 pb-0" for="login-remember">

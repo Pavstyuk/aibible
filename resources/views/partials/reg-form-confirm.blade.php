@@ -16,13 +16,23 @@
         </div>
         <div class="mb-1">
             <label class="required" for="reg-password">{{ __('Пароль') }}</label>
-            <input type="password" name="password" id="reg-password" placeholder="{{ __('Пароль') }}" value=""
-                autocomplete="new-password" required>
+            <input class="password-input-toggle" type="password" name="password" id="reg-password"
+                placeholder="{{ __('Пароль') }}" value="" autocomplete="new-password" required>
+            <button class="password-toggle" data-state="hidden" role="button"
+                onclick="togglePasswordInput(this, event)">
+                <i class="bx bx-eye-alt"></i>
+                <i class="bx bx-eye-closed"></i>
+            </button>
         </div>
         <div class="mb-2">
             <label class="required" for="reg-password-confirm">{{ __('Пароль подтверждение') }}</label>
-            <input type="password" name="password-confirm" id="reg-password-confirm"
+            <input class="password-input-toggle-conf" type="password" name="password-confirm" id="reg-password-confirm"
                 placeholder="{{ __('Пароль подтверждение') }}" value="" autocomplete="new-password" required>
+            <button class="password-toggle" data-state="hidden" role="button"
+                onclick="togglePasswordInput(this, event)">
+                <i class="bx bx-eye-alt"></i>
+                <i class="bx bx-eye-closed"></i>
+            </button>
         </div>
         <div class="mb-2">
             <label class="flex flex-align-center mb-0 ml-0 pl-0 pb-0" for="reg-privacy">

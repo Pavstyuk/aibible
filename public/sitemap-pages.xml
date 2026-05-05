@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://aibible.ru/</loc>
+  </url>
+  <url>
+    <loc>https://aibible.ru/search</loc>
+  </url>
+    <url>
+    <loc>https://aibible.ru/random</loc>
+  </url>
+  <url>
+    <loc>https://aibible.ru/login</loc>
+  </url>
+  <url>
+    <loc>https://aibible.ru/register</loc>
+  </url>
+  <url>
+    <loc>https://aibible.ru/restore</loc>
+  </url>
+  <url>
+    <loc>https://aibible.ru/rbo</loc>
+  </url>
+  <url>
+    <loc>https://aibible.ru/rst</loc>
+  </url>
+  <url>
+    <loc>https://aibible.ru/nasb</loc>
+  </url>
+</urlset>

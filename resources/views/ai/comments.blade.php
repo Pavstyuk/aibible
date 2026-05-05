@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="height-75vh pt-4">
+    <div class="height-75vh pt-2">
         <nav class="width-full mb-2 flex flex-justify-space-between flex-align-center gap-1rem flex-align-center">
             <div>
                 <a class="button-icon" href="{{ route('dashboard', ['id' => $user_id]) }}" aria-label="Назад" title="Назад">

@@ -2,14 +2,14 @@
     <div class="bible-menu-content">
         <p class="mb-1 text-color-second"><b>Меню</b></p>
         <nav class="mb-2 flex flex-justify-start gap-1rem flex-wrap font-size-norm font-weight-500">
-            <a class="text-color-norm flex flex-align-center gap-05rem" href="{{ Route('search') }}">
+            <a class="nav-link text-color-norm flex flex-align-center gap-05rem" href="{{ Route('search') }}">
                 <i class="bx bx-scan-search font-size-big block text-color-second"></i> <span>Поиск</span>
             </a>
-            <a class="text-color-norm flex flex-align-center gap-05rem" href="{{ Route('random') }}">
+            <a class="nav-link text-color-norm flex flex-align-center gap-05rem" href="{{ Route('random') }}">
                 <i class="bx bx-shuffle font-size-big block text-color-second"></i> <span>Случайный отрывок</span>
             </a>
             @if (auth()->id() > 0)
-                <a class="text-color-norm flex flex-align-center gap-05rem"
+                <a class="nav-link text-color-norm flex flex-align-center gap-05rem"
                     href="{{ Route('favorites-user', ['id' => auth()->id()]) }}">
                     <i class="bx bx-heart font-size-big block text-color-second"></i> <span>Избранное</span>
                 </a>

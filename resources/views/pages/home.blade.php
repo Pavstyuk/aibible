@@ -20,7 +20,7 @@
                             $button_text = __('Читать с начала');
                         }
                     @endphp
-                    <a class="button button-main button-mobile-width-full"
+                    <a class="button button-main button-hover button-mobile-width-full"
                         href="/{{ Cookie::get('translation', 'rbo') }}/{{ Cookie::get('book_num', '1') }}/{{ Cookie::get('chapter_num', '1') }}">{{ $button_text }}</a>
                 </nav>
             </header>

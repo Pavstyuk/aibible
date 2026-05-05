@@ -220,3 +220,16 @@ function toggleNotification(elem) {
         return false;
     }
 }
+
+function togglePasswordInput(button, event) {
+    event.preventDefault();
+    var input = button.previousElementSibling;
+
+    if (input.getAttribute("type") === "password") {
+        input.setAttribute("type", "text");
+        button.dataset.state = "visible";
+    } else if (input.getAttribute("type") === "text") {
+        input.setAttribute("type", "password");
+        button.dataset.state = "hidden";
+    }
+}

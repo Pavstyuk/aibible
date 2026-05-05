@@ -5,14 +5,11 @@ use App\Http\Controllers\BibleController;
 use App\Http\Controllers\BibleMenuController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\LoginController;
-// use App\Http\Controllers\NoteController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-// use Illuminate\Support\Facades\Redis;
-// use Illuminate\Support\Facades\Cache;
 
 Route::prefix('htmx')->group(function () {
     Route::get('/menu-books', [BibleMenuController::class, 'books'])->name('menu-books');
