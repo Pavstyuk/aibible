@@ -20,4 +20,11 @@
 <meta name="msapplication-TileColor" content="#087cbf">
 <link rel="manifest" href="/manifest.json">
 
+<meta property="og:title" content="{{ $seo_description }}">
+<meta property="og:site_name" content="{{ env('APP_FULLNAME') }}">
+<meta property="og:image" content="{{ env('APP_URL') }}/assets/img/app-hero.webp" />
+<meta property="og:image:type" content="image/webp" />
+<meta property="og:image:width" content="1024" />
+<meta property="og:image:height" content="768" />
+
 @stack('css')

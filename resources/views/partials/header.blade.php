@@ -1,9 +1,10 @@
-<header class="app-header">
+<header id="app-header" class="app-header">
     <div class="container-full flex flex-align-center flex-justify-space-between gap-1rem">
         <div class="app-logo">
             <a class="flex flex-align-center gap-05rem" href="{{ route('home') }}">
                 <img class="flex-item-fix-auto image-block" width="40" height="40" decoding="async"
-                    fetchpriority="high" src="/assets/svg/favicon.svg" alt="{{ config('app.name') }}">
+                    fetchpriority="high" src="/assets/svg/favicon.svg"
+                    alt="{{ __('Логотип сайта: Библия и звездочки искры') }}">
                 <span class="text-color-norm font-weight-600">{{ config('app.name') }}</span>
             </a>
         </div>

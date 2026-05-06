@@ -233,3 +233,19 @@ function togglePasswordInput(button, event) {
         button.dataset.state = "hidden";
     }
 }
+
+var toTop = document.getElementById("to-top");
+
+function toggleTopButton() {
+    if (window.pageYOffset >= 256) {
+        toTop.classList.remove("hide");
+    } else {
+        toTop.classList.add("hide");
+    }
+}
+
+toggleTopButton();
+
+window.addEventListener("scroll", (e) => {
+    toggleTopButton();
+});

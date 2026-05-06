@@ -48,6 +48,7 @@ body.dark-mode {
     --color-back-accent: #353e61;
     --color-back-accent-light: #232b40;
     --color-gray: #444753;
+    --color-gray-light: #373941;
 
     --color-back-footer: #13151a;
     --color-text: #e5e5e5;
@@ -1778,6 +1779,7 @@ button.button.button-shadow:hover {
     opacity: 1;
 }
 
+a.to-top,
 button.to-top {
     display: flex;
     justify-content: center;
@@ -1788,9 +1790,9 @@ button.to-top {
     width: 3rem;
     height: 3rem;
     border-radius: 0.25rem;
-    background-color: var(--color-back-main);
-    color: var(--color-white);
-    font-size: 3rem;
+    background-color: var(--color-gray-light);
+    color: var(--color-text-second);
+    font-size: 2rem;
     text-align: center;
     border: none;
     line-height: 1;
@@ -1803,15 +1805,12 @@ button.to-top {
 .to-top > svg {
     width: 2rem;
 }
-
+a.to-top:hover,
 button.to-top:hover {
     opacity: 1;
 }
 
-button.to-top > .bx {
-    display: block;
-}
-
+a.to-top.hide,
 button.to-top.hide {
     transform: scale(0);
     opacity: 0;

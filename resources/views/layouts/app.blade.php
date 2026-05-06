@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-    <head>
-        @include('partials.head')
-    </head>
+<head>
+    @include('partials.head')
+</head>
 
-    <body class="bible {{ $theme }}">
+<body id="top" class="bible {{ $theme }}">
 
-        @include('partials.header')
+    @include('partials.header')
 
-        <main class="container-narrow pt-2 pb-4 height-full">
+    <main class="container-narrow pt-2 pb-4 height-full">
 
-            @yield('content')
+        @yield('content')
 
-        </main>
+    </main>
 
-        @include('partials.footer')
+    @include('partials.footer')
 
-    </body>
+</body>
 
 </html>

@@ -3,6 +3,10 @@
 <link rel="stylesheet" href="/assets/fonts/inter-tight/inter-tight.min.css">
 <link rel="stylesheet" href="/assets/fonts/boxicons/boxicons.min.css">
 
+<a id="to-top" class="to-top" href="#top">
+    <i class="bx bx-chevron-up"></i>
+</a>
+
 <footer
     class="app-footer back-color-second the-card flex flex-column gap-1rem flex-justify-center flex-align-center font-weight-norm">
     <nav class="flex flex-wrap gap-1rem justify-content-center align-items-center">
@@ -18,5 +22,6 @@
 </footer>
 <script defer id="htmx-library" src="/assets/libs/htmx.min.js"></script>
 <script defer id="main-scripts" src="/assets/js/main.min.js?ver={{ env('APP_VER', time()) }}"></script>
+<script async id="ya-metrika" src="/assets/js/ya.min.js"></script>
 
 @stack('js')
