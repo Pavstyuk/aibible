@@ -3,7 +3,7 @@
         <div class="mb-1">
             <label class="required" for="">{{ __('Email') }}</label>
             <input type="email" name="email" id="login-email" placeholder="{{ __('Email') }}" value=""
-                autocomplete="" required>
+                autocomplete="" autofocus required>
         </div>
         <div class="mb-2">
             <label class="required" for="login-password">{{ __('Пароль') }}</label>

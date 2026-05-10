@@ -15,7 +15,7 @@
                  hx-trigger="click[confirm('Уверены? Комментарий #{{ $comment->id }} будет удален!')]"
                  hx-swap="innerHTML"
                  hx-on::after-request="document.getElementById('ai-comment-{{ $comment->id }}').remove()"
-                 hx-vals='{"id": "{{ $comment->id }}", "_token": "{{ csrf_token() }}"}'
+                 hx-vals='{"id": "{{ $comment->id }}", "translation": "{{ $comment->translation }}", "_token": "{{ csrf_token() }}"}'
                  class="button button-small button-delete htmx-button">{{ __('Удалить') }}</button>
          </div>
      @endif

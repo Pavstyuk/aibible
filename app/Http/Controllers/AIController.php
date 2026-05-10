@@ -11,6 +11,7 @@ class AIController extends Controller
 {
     use AILog;
 
+    public array $translations = ['rbo', 'rst', 'nasb'];
     private string $key;
     public string $addon_base = 'Ты евангельский христианин богослов. Дай комментарий к отрывку из Библии с христианской точки зрения в контекст все главы и книги. Следуй строгой экзегез. Отметь основную мысль, которая поможет человеку больше познать Бога Творца или Сына Иисуса Христа или Духа Святого. Не придумывай смыслы, которые автор не закладывал в отрывок. В заголовке напиши к какому стиху относится этот комментарий. Ответ должен быть около 1000 символов. Вот сам отрывок: ';
     public string $addon_lexical = 'Ты евангельский христианин богослов. Сделай лексическое литературное и стилистическое исследование отрывка из Библии. Проанализируй язык оригинала текста. Пропиши транслитерацию оригинальных слов на русский язык. Укажи номер Стронга для каждого слова. Если у слов есть несколько значений отметь это. Постарайся быть предельно точным и грамотным. В заголовке укажи, что это лексический анализ. Ответ должен быть около 1000 символов. Вот сам отрывок: ';
@@ -229,7 +230,9 @@ class AIController extends Controller
 
         // $now = date();
 
-        $result = DB::table('ai_comments')->insertGetId(
+        $db_name = 'ai_comments_' . $translation;
+
+        $result = DB::table($db_name)->insertGetId(
             [
                 'translation' => $translation,
                 'verse_id' => $verse_id,
@@ -251,9 +254,9 @@ class AIController extends Controller
 
     function getCommentsByVerseID(string $translation, int $verse_id)
     {
+        $db_name = 'ai_comments_' . $translation;
 
-        $comments = DB::table('ai_comments')
-            ->where('translation', $translation)
+        $comments = DB::table($db_name)
             ->where('verse_id', $verse_id)
             ->orderBy('id', 'desc')
             ->get();
@@ -264,7 +267,9 @@ class AIController extends Controller
     function deleteCommentById(Request $request)
     {
         $id = htmlspecialchars($request->input('id'));
-        $res = DB::table('ai_comments')->where('id', $id)->delete();
+        $translation = htmlspecialchars($request->input('translation'));
+        $db_name = 'ai_comments_' . $translation;
+        $res = DB::table($db_name)->where('id', $id)->delete();
         if ($res) {
             echo '<span class="text-color-success">Удалено!</span>';
         } else {
@@ -280,12 +285,34 @@ class AIController extends Controller
             echo 'Нет данных';
         }
 
-        $comments = DB::table('ai_comments')
-            ->where('user_id', $user_id)
-            ->orderBy('id', 'desc')
-            ->get();
+        $translations = $this->translations;
 
-        if ($comments->count() === 0) {
+        $comments = [];
+        $count = 0;
+
+        foreach ($translations as $translation) {
+            $db_name = 'ai_comments_' . $translation;
+            $current_comments = DB::table($db_name)
+                ->where('user_id', $user_id)
+                ->orderBy('id', 'desc')
+                ->get();
+
+            if ($current_comments) {
+                $count += array_push($comments, $current_comments);
+            }
+        }
+
+        // $comments = DB::table('ai_comments')
+        //     ->where('user_id', $user_id)
+        //     ->orderBy('id', 'desc')
+        //     ->get();
+
+        // if ($comments->count() === 0) {
+        //     echo "Нет комментариев";
+        //     exit;
+        // }
+
+        if ($count === 0) {
             echo "Нет комментариев";
             exit;
         }
@@ -299,6 +326,11 @@ class AIController extends Controller
         return view($template, $data);
     }
 
+    /**
+     * 
+     * Нужно переделать дальнейшие методы под новые таблицы ai комментариев
+     */
+
     function displayCommentsByUserId(Request $request, int $id = 0)
     {
         if (!empty($request->user()->id)) {
@@ -311,22 +343,38 @@ class AIController extends Controller
             return abort(404);
         }
 
-        $comments = DB::table('ai_comments')
-            ->where('user_id', $user_id)
-            ->orderBy('id', 'desc')
-            ->get();
+        $translations = $this->translations;
+
+        $comments = [];
+
+        foreach ($translations as $translation) {
+            $db_name = 'ai_comments_' . $translation;
+            $current_comments = DB::table($db_name)
+                ->where('user_id', $user_id)
+                ->orderBy('id', 'desc')
+                ->get()->all();
+
+            $comments += $current_comments;
+        }
+
+        // dd($comments);
+
+        // $comments = DB::table('ai_comments')
+        //     ->where('user_id', $user_id)
+        //     ->orderBy('id', 'desc')
+        //     ->get();
 
         $seo_title = "Сохраненные сгенерированные ИИ комментарии к отрывкам из Библии";
         $seo_description = "Сохраненные сгенерированные ИИ комментарии к отрывкам из Библии";
 
         $data = [
-            'comments' => $comments,
-            'user_id'       => $user_id,
+            'comments'          => $comments,
+            'user_id'           => $user_id,
             'book_num'          => $request->cookie('book_num'),
-            'chapter_num'      => $request->cookie('chapter_num'),
-            'seo_title'     => $seo_title,
-            'seo_description' => $seo_description,
-            'theme'         => $_COOKIE['apptheme'] ?? '',
+            'chapter_num'       => $request->cookie('chapter_num'),
+            'seo_title'         => $seo_title,
+            'seo_description'   => $seo_description,
+            'theme'             => $_COOKIE['apptheme'] ?? '',
         ];
 
         $template = 'ai.comments';
@@ -336,10 +384,25 @@ class AIController extends Controller
 
     function getNewestComments(int $number = 3)
     {
-        $comments = DB::table('ai_comments')
-            ->latest()
-            ->take($number)
-            ->get();
+
+        $translations = $this->translations;
+
+        $comments = [];
+
+        foreach ($translations as $translation) {
+            $db_name = 'ai_comments_' . $translation;
+            $current_comments = DB::table($db_name)
+                ->latest()
+                ->take($number)
+                ->get()->all();
+
+            $comments += $current_comments;
+        }
+
+        // $comments = DB::table('ai_comments')
+        //     ->latest()
+        //     ->take($number)
+        //     ->get();
 
         return $comments;
     }

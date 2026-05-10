@@ -69,9 +69,8 @@
             @endphp
             <h2 class="font-size-big text-center text-color-second">Функции искусственного интеллекта</h2>
             @if (!auth()->id())
-                <p class="text-center font-size-small mb-2">Необходима <a href="{{ route('login') }}">войти в свой
-                        аккаунт</a>,
-                    чтобы использовать функционал ИИ</p>
+                <p class="text-center font-size-small mb-2">Необходимо <a href="{{ route('login') }}">войти в свой
+                        аккаунт</a>, чтобы использовать функционал ИИ</p>
             @endif
 
             <div class="grid grid-two-column gap-1rem mb-2 {{ $class_inactive }}">
