@@ -33,7 +33,7 @@ class SendRestoreLink extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'ИИ Библия. Ссылка на восстановление пароля',
+            subject: '↗️ ИИ Библия. Ссылка на восстановление пароля',
         );
     }
 

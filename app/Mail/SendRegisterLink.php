@@ -29,7 +29,7 @@ class SendRegisterLink extends Mailable
 
     public function build()
     {
-        return $this->subject('ИИ Библия. Ссылка на завершение регистрации')
+        return $this->subject('👋 ИИ Библия. Ссылка на завершение регистрации')
             ->view('emails.send-reg-link');
     }
 
