@@ -1,4 +1,4 @@
 User-agent: *
 
 Host: https://aibible.ru
-Sitemap: https://aibible.ru/index.xml
+Sitemap: https://aibible.ru/sitemap.xml
