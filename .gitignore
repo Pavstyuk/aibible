@@ -18,6 +18,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
+vendor/_laravel_ide/
 Homestead.json
 Homestead.yaml
 Thumbs.db
