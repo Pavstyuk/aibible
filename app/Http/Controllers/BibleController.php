@@ -179,8 +179,8 @@ class BibleController extends Controller
         $books_nav = $this->createBookNav($translation);
         $chapter_nav = $this->createChapterNav($translation, $book_num);
 
-        $seo_title = "$book_title глава $book_num, " . strtoupper($translation) . ' | ' . env('APP_FULLNAME');
-        $seo_description = "$book_title глава $book_num, " . strtoupper($translation) . ' | ' . env('APP_DESC');
+        $seo_title = "$book_title глава $chapter_num, " . strtoupper($translation) . ' | ' . env('APP_FULLNAME');
+        $seo_description = "$book_title глава $chapter_num, " . strtoupper($translation) . ' | ' . env('APP_DESC');
 
         $data = [
             'translation' => $translation,
@@ -254,8 +254,8 @@ class BibleController extends Controller
 
         $single_title = $this->getWordsForTitle($text[0]->verse);
 
-        $seo_title = "$single_title $book_title $book_num:$verse_display" . ' — ' . env('APP_FULLNAME');
-        $seo_description = "$single_title $book_title $book_num:$verse_display " . strtoupper($translation) . '. ' . env('APP_DESC');
+        $seo_title = "$single_title $book_title $chapter_num:$verse_display" . ' — ' . env('APP_FULLNAME');
+        $seo_description = "$single_title $book_title $chapter_num:$verse_display " . strtoupper($translation) . '. ' . env('APP_DESC');
 
         $ai = new AIController();
         $comments = $ai->getCommentsByVerseID($translation, $verse_id);
