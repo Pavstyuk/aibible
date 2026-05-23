@@ -249,3 +249,25 @@ toggleTopButton();
 window.addEventListener("scroll", (e) => {
     toggleTopButton();
 });
+
+function decreaseFont() {
+    var sizeFactor = Number(getCookie("font_size") ?? 0);
+    if (sizeFactor <= -5) return;
+    sizeFactor -= 1;
+    setCookie("font_size", sizeFactor);
+    setAppFontSize(sizeFactor);
+}
+
+function increaseFont() {
+    var sizeFactor = Number(getCookie("font_size") ?? 0);
+    if (sizeFactor >= 5) return;
+    sizeFactor += 1;
+    setCookie("font_size", sizeFactor);
+    setAppFontSize(sizeFactor);
+}
+
+function setAppFontSize(size) {
+    document.body.dataset.fontSize = size;
+    document.getElementById("font-size-output").value = size;
+    document.getElementById("font-size-output").textContent = size;
+}

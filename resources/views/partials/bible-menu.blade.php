@@ -27,6 +27,18 @@
                         title="{{ __('Переключить тему светла/темная') }}" onclick="toggleTheme()" data-status="close">
                         <i class='bx bx-moon'></i>
                     </button>
+                    <div class="flex flex-align-center gap-05rem chapter-text">
+                        <button id="decrease-font" class='button-icon font-size-small' onclick="decreaseFont()">
+                            <i class="bx bx-minus"></i>
+                        </button>
+                        <span class="data-font-size">Шрифт:
+                            <output id="font-size-output" name="font-size-output" role="status"
+                                value="{{ $_COOKIE['font_size'] ?? '' }}">{{ $_COOKIE['font_size'] ?? '' }}</output>
+                        </span>
+                        <button id="increase-font" class='button-icon font-size-small' onclick="increaseFont()">
+                            <i class="bx bx-plus"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

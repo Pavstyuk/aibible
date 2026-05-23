@@ -5,7 +5,7 @@
     @include('partials.head')
 </head>
 
-<body id="top" class="bible {{ $theme }}">
+<body id="top" class="bible {{ $theme }}" data-font-size="{{ $_COOKIE['font_size'] ?? '' }}">
 
     @include('partials.header')
 
