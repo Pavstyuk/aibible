@@ -24,7 +24,9 @@
                     <sub>{{ $verse->verse_num }}</sub>{{ $verse->verse }}
                 </span>
                 <a class="button-to-verse" onclick="event.preventDefault(); buildURL(this)"
-                    href="/{{ $translation }}/{{ $book_num }}/{{ $chapter_num }}/{{ $verse->verse_num }}">
+                    href="/{{ $translation }}/{{ $book_num }}/{{ $chapter_num }}/{{ $verse->verse_num }}"
+                    aria-label="Перейти к отрывку: {{ $book }} {{ $chapter_num }}:{{ $verse->verse_num }}"
+                    title="Ссылка на страницу отрывка: {{ $book }} {{ $chapter_num }}:{{ $verse->verse_num }}">
                     <i class="bx bx-chevron-right"></i>
                 </a>
             </p>

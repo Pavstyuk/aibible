@@ -252,7 +252,7 @@ window.addEventListener("scroll", (e) => {
 
 function decreaseFont() {
     var sizeFactor = Number(getCookie("font_size") ?? 0);
-    if (sizeFactor <= -5) return;
+    if (sizeFactor <= 0) return;
     sizeFactor -= 1;
     setCookie("font_size", sizeFactor);
     setAppFontSize(sizeFactor);

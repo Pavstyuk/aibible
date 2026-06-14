@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/assets/fonts/inter-tight/inter-tight.min.css">
 <link rel="stylesheet" href="/assets/fonts/boxicons/boxicons.min.css">
 
-<a id="to-top" class="to-top" href="#top">
+<a id="to-top" class="to-top" href="#top" aria-label="Прокрутка в начало">
     <i class="bx bx-chevron-up"></i>
 </a>
 
