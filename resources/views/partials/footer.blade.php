@@ -10,13 +10,13 @@
 <footer
     class="app-footer back-color-second the-card flex flex-column gap-1rem flex-justify-center flex-align-center font-weight-norm">
     <nav class="flex flex-wrap gap-1rem justify-content-center align-items-center">
-        <a class="font-size-tiny text-color-second" href="{{ route('policy') }}">Политика конфиденциальности</a>
-        <a class="font-size-tiny text-color-second" href="{{ route('privacy') }}">Согласие на обработку ПД</a>
+        <a class="font-size-small text-color-second" href="{{ route('policy') }}">Политика конфиденциальности</a>
+        <a class="font-size-small text-color-second" href="{{ route('privacy') }}">Согласие на обработку ПД</a>
     </nav>
-    <p class="mb-0 font-size-tiny text-color-second">
+    <p class="mb-0 font-size-small text-color-second">
         <span>{{ env('APP_NAME', 'AI Bible') }}, <?= '2025-' . date('Y') ?></span>
     </p>
-    <p class="mb-0 font-size-tiny text-color-second">
+    <p class="mb-0 font-size-small text-color-second">
         Версия {{ env('APP_VER', '1.0') }}
     </p>
 </footer>
