@@ -80,16 +80,16 @@ class RegisterController extends Controller
         if ($user->wasChanged()) {
 
             // Текст уведомления
-            $messageText = <<<TEXT
-                На сайте aibible.ru зарегистрирован новый пользователь. \r\n
-                Email пользователя: $email.
-            TEXT;
+            // $messageText = <<<TEXT
+            //     На сайте aibible.ru зарегистрирован новый пользователь. \r\n
+            //     Email пользователя: $email.
+            // TEXT;
 
             // Отправка письма
-            Mail::raw($messageText, function ($message) {
-                $message->to(env('EMAIL_ADMIN'))
-                    ->subject('👋 Новый пользователь на сайте Библия ИИ');
-            })->queue();
+            // Mail::raw($messageText, function ($message) {
+            //     $message->to(env('EMAIL_ADMIN'))
+            //         ->subject('👋 Новый пользователь на сайте Библия ИИ');
+            // });
 
 
             // Аутентификация пользователя
