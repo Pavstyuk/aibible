@@ -83,13 +83,11 @@
                     hx-swap="innerHTML" hx-on::after-request="this.remove()"
                     class="button button-gray htmx-button button-width-full">{{ __('Лексический анализ') }}</button>
 
-                <button hx-get="{{ route('ask-open-router', ['type' => 'questions']) }}" hx-target="#ai-comment"
-                    hx-trigger="click"
+                <button hx-get="{{ route('ask-ai', ['type' => 'questions']) }}" hx-target="#ai-comment" hx-trigger="click"
                     hx-vals='{"verse": "{{ $val }}", "verse_id": "{{ $verse_id }}", "translation": "{{ $translation }}", "_token": "{{ csrf_token() }}"}'
                     hx-swap="innerHTML" hx-on::after-request="this.remove()"
                     class="button button-gray htmx-button button-width-full">{{ __('Вопросы для обсуждения') }}</button>
-                <button hx-get="{{ route('ask-open-router', ['type' => 'sermon']) }}" hx-target="#ai-comment"
-                    hx-trigger="click"
+                <button hx-get="{{ route('ask-ai', ['type' => 'sermon']) }}" hx-target="#ai-comment" hx-trigger="click"
                     hx-vals='{"verse": "{{ $val }}", "verse_id": "{{ $verse_id }}", "translation": "{{ $translation }}", "_token": "{{ csrf_token() }}"}'
                     hx-swap="innerHTML" hx-on::after-request="this.remove()"
                     class="button button-gray htmx-button button-width-full">{{ __('Простая проповедь') }}</button>
