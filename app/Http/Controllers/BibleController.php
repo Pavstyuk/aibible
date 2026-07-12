@@ -237,7 +237,6 @@ class BibleController extends Controller
         $verse_id_end = $text->last()->id;
 
         $next_id = ++$text->last()->id;
-
         $prev_id = --$text->first()->id;
 
         $next_verse_link = $this->createVerseLink(
@@ -250,8 +249,13 @@ class BibleController extends Controller
             --$prev_id
         );
 
-        $book_title = $text[0]->book_name;
 
+        $full_text = '';
+        foreach ($text as $item) {
+            $full_text .= $item->verse . ' ';
+        }
+
+        $book_title = $text[0]->book_name;
         $single_title = $this->getWordsForTitle($text[0]->verse);
 
         $seo_title = "$single_title $book_title $chapter_num:$verse_display" . ' — ' . env('APP_FULLNAME');
@@ -284,6 +288,7 @@ class BibleController extends Controller
             'book_num'      => $book_num,
             'title'         => $single_title,
             'text'          => $text,
+            'full_text'     => "$full_text",
             'book'          => $book_title,
             'chapter_num'   => $chapter_num,
             'verses'        => $verse_display,

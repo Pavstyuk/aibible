@@ -65,7 +65,7 @@
 
         <div class="mt-6 width-full">
             @php
-                $val = urlencode("$verse->verse ($book $chapter_num:$verses)");
+                $val = urlencode("$full_text($book $chapter_num:$verses)");
             @endphp
             <h2 class="font-size-big text-center text-color-second">Функции искусственного интеллекта</h2>
             @if (!auth()->id())
