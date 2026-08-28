@@ -45,7 +45,7 @@ class AIController extends Controller
         $question = $addon . $verse . $this->addon_postfix;
 
         $data = [
-            "model" => "mistral-large-latest",
+            "model" => "mistral-small-latest",
             "temperature" => $temp,
             "messages" => [
                 [
