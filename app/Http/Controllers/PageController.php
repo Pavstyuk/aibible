@@ -10,36 +10,43 @@ class PageController extends Controller
 
     function policy(Request $request)
     {
-        $seo_title = 'Политика в отношении обработки персональных данных. ' . env('APP_FULLNAME');
-        $seo_description = 'Политика в отношении обработки персональных данных. ' . env('APP_DESC');
+        $seo_title =
+            "Политика в отношении обработки персональных данных. " .
+            config("app.fullname");
+        $seo_description =
+            "Политика в отношении обработки персональных данных. " .
+            config("app.desc");
         $data = [
-            'user_id'           => auth()->id() ?? 0,
-            'book_num'          => $request->cookie('book_num'),
-            'chapter_num'       => $request->cookie('chapter_num'),
-            'seo_title'         => $seo_title,
-            'seo_description'   => $seo_description,
-            'theme'             => $_COOKIE['apptheme'] ?? '',
+            "user_id" => auth()->id() ?? 0,
+            "book_num" => $request->cookie("book_num"),
+            "chapter_num" => $request->cookie("chapter_num"),
+            "seo_title" => $seo_title,
+            "seo_description" => $seo_description,
+            "theme" => $_COOKIE["apptheme"] ?? "",
         ];
 
-        $template = 'pages.policy';
+        $template = "pages.policy";
 
         return view($template, $data);
     }
 
     function privacy(Request $request)
     {
-        $seo_title = 'Согласие на обработку персональных данных. ' . env('APP_FULLNAME');
-        $seo_description = 'Согласие на обработку персональных данных. ' . env('APP_DESC');
+        $seo_title =
+            "Согласие на обработку персональных данных. " .
+            config("app.fullname");
+        $seo_description =
+            "Согласие на обработку персональных данных. " . config("app.desc");
         $data = [
-            'user_id'           => auth()->id() ?? 0,
-            'book_num'          => $request->cookie('book_num'),
-            'chapter_num'       => $request->cookie('chapter_num'),
-            'seo_title'         => $seo_title,
-            'seo_description'   => $seo_description,
-            'theme'             => $_COOKIE['apptheme'] ?? '',
+            "user_id" => auth()->id() ?? 0,
+            "book_num" => $request->cookie("book_num"),
+            "chapter_num" => $request->cookie("chapter_num"),
+            "seo_title" => $seo_title,
+            "seo_description" => $seo_description,
+            "theme" => $_COOKIE["apptheme"] ?? "",
         ];
 
-        $template = 'pages.privacy';
+        $template = "pages.privacy";
 
         return view($template, $data);
     }

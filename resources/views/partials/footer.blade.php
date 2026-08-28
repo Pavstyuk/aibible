@@ -14,14 +14,14 @@
         <a class="font-size-small text-color-second" href="{{ route('privacy') }}">Согласие на обработку ПД</a>
     </nav>
     <p class="mb-0 font-size-small text-color-second">
-        <span>{{ env('APP_NAME', 'AI Bible') }}, <?= '2025-' . date('Y') ?></span>
+        <span>{{ config('app.name', 'AI Bible') }}, <?= '2025-' . date('Y') ?></span>
     </p>
     <p class="mb-0 font-size-small text-color-second">
-        Версия {{ env('APP_VER', '1.0') }}
+        Версия {{ config('app.ver', '1.0') }}
     </p>
 </footer>
 <script defer id="htmx-library" src="/assets/libs/htmx.min.js"></script>
-<script defer id="main-scripts" src="/assets/js/main.min.js?ver={{ env('APP_VER', time()) }}"></script>
+<script defer id="main-scripts" src="/assets/js/main.min.js?ver={{ config('app.ver', time()) }}"></script>
 <script async id="ya-metrika" src="/assets/js/ya.min.js"></script>
 
 @stack('js')

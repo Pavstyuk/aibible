@@ -5,11 +5,11 @@
 
 <link rel="preload" href="/assets/fonts/inter-tight/inter-tight.min.css" as="style">
 <link rel="preload" href="/assets/fonts/boxicons/boxicons.min.css" as="style">
-<link rel="preload" href="/assets/css/main.min.css?ver={{ env('APP_VER', time()) }}" as="style">
-<link rel="preload" href="/assets/css/custom.min.css?ver={{ env('APP_VER', time()) }}" as="style">
+<link rel="preload" href="/assets/css/main.min.css?ver={{ config('app.ver', time()) }}" as="style">
+<link rel="preload" href="/assets/css/custom.min.css?ver={{ config('app.ver', time()) }}" as="style">
 
-<link rel="stylesheet" href="/assets/css/main.min.css?ver={{ env('APP_VER', time()) }}">
-<link rel="stylesheet" href="/assets/css/custom.min.css?ver={{ env('APP_VER', time()) }}">
+<link rel="stylesheet" href="/assets/css/main.min.css?ver={{ config('app.ver', time()) }}">
+<link rel="stylesheet" href="/assets/css/custom.min.css?ver={{ config('app.ver', time()) }}">
 
 <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
 <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
@@ -21,8 +21,8 @@
 <link rel="manifest" href="/manifest.json">
 
 <meta property="og:title" content="{{ $seo_description }}">
-<meta property="og:site_name" content="{{ env('APP_FULLNAME') }}">
-<meta property="og:image" content="{{ env('APP_URL') }}/assets/img/app-hero.webp" />
+<meta property="og:site_name" content="{{ config('app.fullname') }}">
+<meta property="og:image" content="{{ config('app.url') }}/assets/img/app-hero.webp" />
 <meta property="og:image:type" content="image/webp" />
 <meta property="og:image:width" content="1024" />
 <meta property="og:image:height" content="768" />

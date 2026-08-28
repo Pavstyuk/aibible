@@ -6,11 +6,11 @@
             <header
                 class="grid-item column-span-2 the-card back-color-second border-radius-norm height-half flex flex-column flex-justify-end gap-1rem">
                 <h1 class="mb-0 mt-0 width-read text-balance">
-                    <span class="text-color-second font-size-norm">{{ env('APP_NAME') }}</span><br />
-                    {!! env('APP_FULLNAME') !!}
+                    <span class="text-color-second font-size-norm">{{ config('app.name') }}</span><br />
+                    {!! config('app.fullname') !!}
                 </h1>
                 <p class="mb-2 width-read text-balance">
-                    {{ env('APP_DESC') }}
+                    {{ config('app.desc') }}
                 </p>
                 <nav class="flex flex-wrap gap-1rem">
                     @php

@@ -11,7 +11,6 @@ class UserController extends Controller
 {
     public function index(Request $request, int $id = 0)
     {
-
         if (empty($id) || $id === 0) {
             return abort(404);
         }
@@ -29,20 +28,21 @@ class UserController extends Controller
         $user_name = $request->user()->name;
 
         $seo_title = "Панель управления $user_name";
-        $seo_description = "Панель управления $user_name" . ' ' . env('APP_DESC');
+        $seo_description =
+            "Панель управления $user_name" . " " . config("app.desc");
 
         $data = [
-            'user_id'   => $user_id,
-            'user_name' => $user_name,
-            'translation' => $request->cookie('translation', 'rbo'),
-            'book_num' => $request->cookie('book_num', 1),
-            'chapter_num' => $request->cookie('chapter_num', 1),
-            'seo_title' => $seo_title,
-            'seo_description' => $seo_description,
-            'theme' => $_COOKIE['apptheme'] ?? '',
+            "user_id" => $user_id,
+            "user_name" => $user_name,
+            "translation" => $request->cookie("translation", "rbo"),
+            "book_num" => $request->cookie("book_num", 1),
+            "chapter_num" => $request->cookie("chapter_num", 1),
+            "seo_title" => $seo_title,
+            "seo_description" => $seo_description,
+            "theme" => $_COOKIE["apptheme"] ?? "",
         ];
 
-        $template = 'user.dashboard';
+        $template = "user.dashboard";
 
         return view($template, $data);
     }
@@ -67,21 +67,22 @@ class UserController extends Controller
         $user_email = $request->user()->email;
 
         $seo_title = "Обновить $user_name";
-        $seo_description = "Панель управления $user_name" . ' ' . env('APP_DESC');
+        $seo_description =
+            "Панель управления $user_name" . " " . config("app.desc");
 
         $data = [
-            'user_id'   => $user_id,
-            'user_name' => $user_name,
-            'user_email' => $user_email,
-            'translation' => $request->cookie('translation', 'rbo'),
-            'book_num' => $request->cookie('book_num', 1),
-            'chapter_num' => $request->cookie('chapter_num', 1),
-            'seo_title' => $seo_title,
-            'seo_description' => $seo_description,
-            'theme' => $_COOKIE['apptheme'] ?? '',
+            "user_id" => $user_id,
+            "user_name" => $user_name,
+            "user_email" => $user_email,
+            "translation" => $request->cookie("translation", "rbo"),
+            "book_num" => $request->cookie("book_num", 1),
+            "chapter_num" => $request->cookie("chapter_num", 1),
+            "seo_title" => $seo_title,
+            "seo_description" => $seo_description,
+            "theme" => $_COOKIE["apptheme"] ?? "",
         ];
 
-        $template = 'user.edit';
+        $template = "user.edit";
 
         return view($template, $data);
     }
@@ -102,43 +103,49 @@ class UserController extends Controller
             return abort(404);
         }
 
-        $name = htmlspecialchars($request->input('name'));
-        $email = htmlspecialchars($request->input('email'));
+        $name = htmlspecialchars($request->input("name"));
+        $email = htmlspecialchars($request->input("email"));
 
-        $user = User::where('email', $email)->first();
+        $user = User::where("email", $email)->first();
 
         if ($user->name === $name) {
-            return back()->withErrors([
-                'name' => "Ваше имя осталось прежним: <i>$user->name</i>",
-            ])->withInput();
+            return back()
+                ->withErrors([
+                    "name" => "Ваше имя осталось прежним: <i>$user->name</i>",
+                ])
+                ->withInput();
         }
-
 
         if ($user) {
             try {
                 $user->name = $name;
                 $user->save();
             } catch (Exception $e) {
-                return back()->withErrors([
-                    'name' => "Ошибка сохранения имени. Имя <i>$user->name</i> уже занято",
-                ])->withInput();
+                return back()
+                    ->withErrors([
+                        "name" => "Ошибка сохранения имени. Имя <i>$user->name</i> уже занято",
+                    ])
+                    ->withInput();
             }
         } else {
-            return back()->withErrors([
-                'email' => "Странно не могу найти пользователя с email <i>$user->email</i>",
-            ])->withInput();
+            return back()
+                ->withErrors([
+                    "email" => "Странно не могу найти пользователя с email <i>$user->email</i>",
+                ])
+                ->withInput();
         }
-
 
         if ($user->wasChanged()) {
             Auth::login($user);
             return redirect()
-                ->route('dashboard', ['id' => $user->id])
-                ->with('status', "Вы обновили свое имя, $user->name");
+                ->route("dashboard", ["id" => $user->id])
+                ->with("status", "Вы обновили свое имя, $user->name");
         } else {
-            return back()->withErrors([
-                'name' => "Ошибка сохранения имени. Имя <i>$user->name</i> уже занято",
-            ])->withInput();
+            return back()
+                ->withErrors([
+                    "name" => "Ошибка сохранения имени. Имя <i>$user->name</i> уже занято",
+                ])
+                ->withInput();
         }
     }
 }

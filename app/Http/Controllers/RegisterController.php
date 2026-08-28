@@ -15,70 +15,80 @@ class RegisterController extends Controller
 {
     function index(Request $request)
     {
-        $email_key = htmlspecialchars($request->input('email_key', ''));
-        $email_address = htmlspecialchars($request->input('email_address', ''));
+        $email_key = htmlspecialchars($request->input("email_key", ""));
+        $email_address = htmlspecialchars($request->input("email_address", ""));
 
         $data = [
-            'seo_title' => '',
-            'seo_description' => '',
-            'email_key' => '',
-            'email_address' => '',
-            'theme' => $_COOKIE['apptheme'] ?? '',
-            'book_num' => $request->cookie('book_num', 1),
-            'chapter_num' => $request->cookie('chapter_num', 1),
+            "seo_title" => "",
+            "seo_description" => "",
+            "email_key" => "",
+            "email_address" => "",
+            "theme" => $_COOKIE["apptheme"] ?? "",
+            "book_num" => $request->cookie("book_num", 1),
+            "chapter_num" => $request->cookie("chapter_num", 1),
         ];
 
-        if ($email_address && $email_key && filter_var($email_address, FILTER_VALIDATE_EMAIL)) {
-            $user = User::where('email', $email_address)->first();
+        if (
+            $email_address &&
+            $email_key &&
+            filter_var($email_address, FILTER_VALIDATE_EMAIL)
+        ) {
+            $user = User::where("email", $email_address)->first();
             if ($user && $user->email_key === $email_key) {
-                $data['email_key'] = $email_key;
-                $data['email_address'] = $email_address;
+                $data["email_key"] = $email_key;
+                $data["email_address"] = $email_address;
             }
         }
 
-        return view('auth.register', $data);
+        return view("auth.register", $data);
     }
 
     function restore(Request $request)
     {
         $data = [
-            'seo_title' => 'Страница восстановления пароля' . ' - ' . env('APP_FULLNAME'),
-            'seo_description' => 'Страница восстановления пароля' . ' - ' . env('APP_DESC'),
-            'theme' => $_COOKIE['apptheme'] ?? '',
-            'book_num' => $request->cookie('book_num', 1),
-            'chapter_num' => $request->cookie('chapter_num', 1),
+            "seo_title" =>
+                "Страница восстановления пароля" .
+                " - " .
+                config("app.fullname"),
+            "seo_description" =>
+                "Страница восстановления пароля" . " - " . config("app.desc"),
+            "theme" => $_COOKIE["apptheme"] ?? "",
+            "book_num" => $request->cookie("book_num", 1),
+            "chapter_num" => $request->cookie("chapter_num", 1),
         ];
-        return view('auth.restore', $data);
+        return view("auth.restore", $data);
     }
 
     function store(Request $request)
     {
+        $email = htmlspecialchars(trim($request->input("email")));
 
-        $email = htmlspecialchars(trim($request->input('email')));
+        $name = mb_ucfirst(explode("@", $email)[0]);
 
-        $name = mb_ucfirst(explode('@', $email)[0]);
-
-        if ($request->input('password') === $request->input('password-confirm')) {
-            $password = $request->input('password');
+        if (
+            $request->input("password") === $request->input("password-confirm")
+        ) {
+            $password = $request->input("password");
         } else {
-            return back()->withErrors([
-                'password-confirm' => 'Ошибка подтверждения пароля',
-            ])->withInput();
+            return back()
+                ->withErrors([
+                    "password-confirm" => "Ошибка подтверждения пароля",
+                ])
+                ->withInput();
         }
 
-        $privacy = $request->input('privacy');
+        $privacy = $request->input("privacy");
 
-        $user = User::where('email', $email)->first();
+        $user = User::where("email", $email)->first();
 
         if ($user) {
             $user->update([
-                'name' => $name,
-                'password' => Hash::make($password),
-                'email_key' => null
+                "name" => $name,
+                "password" => Hash::make($password),
+                "email_key" => null,
             ]);
         }
         if ($user->wasChanged()) {
-
             // Текст уведомления
             // $messageText = <<<TEXT
             //     На сайте aibible.ru зарегистрирован новый пользователь. \r\n
@@ -91,16 +101,21 @@ class RegisterController extends Controller
             //         ->subject('👋 Новый пользователь на сайте Библия ИИ');
             // });
 
-
             // Аутентификация пользователя
             Auth::login($user);
             return redirect()
-                ->route('dashboard', ['id' => $user->id])
-                ->with('status', "Добро пожаловать в свой аккаунт, $user->name");
+                ->route("dashboard", ["id" => $user->id])
+                ->with(
+                    "status",
+                    "Добро пожаловать в свой аккаунт, $user->name",
+                );
         } else {
-            return back()->withErrors([
-                'password' => 'Ошибка сохранения пользователя в базе данных',
-            ])->withInput();
+            return back()
+                ->withErrors([
+                    "password" =>
+                        "Ошибка сохранения пользователя в базе данных",
+                ])
+                ->withInput();
         }
     }
 
@@ -109,16 +124,18 @@ class RegisterController extends Controller
      */
     function sendRegisterLink(Request $request)
     {
-        $email_address = htmlspecialchars($request->input('email'));
-        $key = htmlspecialchars($request->input('_key', ''));
-        if (!empty($request->input('_restore')) && (int) $request->input('_restore') === 1) {
+        $email_address = htmlspecialchars($request->input("email"));
+        $key = htmlspecialchars($request->input("_key", ""));
+        if (
+            !empty($request->input("_restore")) &&
+            (int) $request->input("_restore") === 1
+        ) {
             $is_restore = true;
         } else {
             $is_restore = false;
         }
 
-
-        $verification_key = 'aibible_form_key_' . substr((string) time(), 0, 8);
+        $verification_key = "aibible_form_key_" . substr((string) time(), 0, 8);
         if (empty($key) || $key !== $verification_key) {
             die("Стоп Спам");
         }
@@ -129,72 +146,64 @@ class RegisterController extends Controller
                 Убедитесь, что адрес почты введен корректно!
             </div>
             HTML;
-            exit;
+            exit();
         }
 
         if (!$is_restore) {
-
-            if (User::where('email', $email_address)->exists()) {
+            if (User::where("email", $email_address)->exists()) {
                 echo <<<HTML
                     <div class="message message-error">
                         Адрес $email_address уже зарегистрирован в системе. Если это ваш, воспользуйтесь формой <a class="text-color-second" href='/restore'>восстановления пароля</a>
                     </div>
                 HTML;
-                exit;
+                exit();
             }
 
             $email_key = Str::uuid()->toString();
 
             $user = User::create([
-                'email'     => $email_address,
-                'email_key' => $email_key,
+                "email" => $email_address,
+                "email_key" => $email_key,
             ]);
 
-            $reg_link = route(
-                'registration',
-                [
-                    'email_address' => $email_address,
-                    'email_key' => $email_key
-                ]
-            );
+            $reg_link = route("registration", [
+                "email_address" => $email_address,
+                "email_key" => $email_key,
+            ]);
             Mail::to($email_address)->send(new SendRegisterLink($reg_link));
         }
 
         if ($is_restore) {
-            if (!User::where('email', $email_address)->exists()) {
+            if (!User::where("email", $email_address)->exists()) {
                 echo <<<HTML
                     <div class="message message-error">
                         Адрес $email_address НЕ зарегистрирован в системе. Попробуйте <a class="text-color-second" href='/register'>зарегистрироваться</a>
                     </div>
                 HTML;
-                exit;
+                exit();
             }
 
             $email_key = Str::uuid()->toString();
 
-            $user = User::where('email', $email_address)->first();
+            $user = User::where("email", $email_address)->first();
 
             if ($user) {
-                $user->update(['email_key' => $email_key]);
+                $user->update(["email_key" => $email_key]);
                 $user->save();
             }
 
-            $reg_link = route(
-                'registration',
-                [
-                    'email_address' => $email_address,
-                    'email_key' => $email_key
-                ]
-            );
+            $reg_link = route("registration", [
+                "email_address" => $email_address,
+                "email_key" => $email_key,
+            ]);
             Mail::to($email_address)->send(new SendRestoreLink($reg_link));
         }
 
-
         echo <<<HTML
-            <div class="message message-success">
-                Проверьте ваш почтовый ящик $email_address, должно прийти письмо с ссылкой для установки пароля.
-            </div>
-            HTML;
-        exit;
+        <div class="message message-success">
+            Проверьте ваш почтовый ящик $email_address, должно прийти письмо с ссылкой для установки пароля.
+        </div>
+        HTML;
+        exit();
     }
 }

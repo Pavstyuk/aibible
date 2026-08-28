@@ -123,4 +123,8 @@ return [
     "mistral_key" => env("MISTRAL_KEY"),
     "open_router_key" => env("OPEN_ROUTER_KEY"),
     "email_admin" => env("EMAIL_ADMIN"),
+    "fullname" => env("APP_FULLNAME"),
+    "desc" => env("APP_DESC"),
+    "ver" => env("APP_VER"),
+    "url" => env("APP_URL"),
 ];

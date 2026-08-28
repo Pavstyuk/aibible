@@ -27,7 +27,7 @@ class WelcomeEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Успешная регистрация на сайте ' . env('APP_NAME'),
+            subject: "Успешная регистрация на сайте " . config("app.desc"),
         );
     }
 
@@ -36,9 +36,7 @@ class WelcomeEmail extends Mailable
      */
     public function content(): Content
     {
-        return new Content(
-            view: 'view.name',
-        );
+        return new Content(view: "view.name");
     }
 
     /**
