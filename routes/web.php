@@ -16,8 +16,8 @@ Route::prefix('htmx')->group(function () {
     Route::get('/menu-chapters', [BibleMenuController::class, 'chapters'])->name('menu-chapters');
     Route::get('/menu-translations', [BibleMenuController::class, 'translations'])->name('menu-translations');
     Route::get('/text-chapter', [BibleController::class, 'ajaxTextChapter'])->name('textChapter');
-    Route::get('/ask-ai', [AIController::class, 'askMistral'])->name('ask-ai');
-    Route::get('/ask-open-router', [AIController::class, 'askOpenRouter'])->name('ask-open-router');
+    Route::get('/ask-ai', [AIController::class, 'askGemini'])->name('ask-ai');
+    Route::get('/ask-open-router', [AIController::class, 'askVercelProxy'])->name('ask-open-router');
     Route::get('/ask-local', [AIController::class, 'askLMStudio'])->name('ask-local');
     Route::post('/save-ai', [AIController::class, 'saveComment'])->name('save-ai');
     Route::get('/comments-ai', [AIController::class, 'getCommentsByUserId'])->name('comments-ai');

@@ -121,7 +121,9 @@ return [
     ],
 
     "mistral_key" => env("MISTRAL_KEY"),
-    "open_router_key" => env("OPEN_ROUTER_KEY"),
+    "open_router_key_1" => env("OPEN_ROUTER_KEY_1"),
+    "open_router_key_2" => env("OPEN_ROUTER_KEY_2"),
+    "gemini_key" => env("GEMINI_KEY"),
     "email_admin" => env("EMAIL_ADMIN"),
     "fullname" => env("APP_FULLNAME"),
     "desc" => env("APP_DESC"),

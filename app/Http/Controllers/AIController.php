@@ -30,6 +30,83 @@ class AIController extends Controller
         };
     }
 
+    public function askGemini(Request $request)
+    {
+        $url = "https://gemini-proxy-ten-chi.vercel.app/api/v1beta/interactions";
+        $this->key = config("app.gemini_key");
+        // $model = "gemini-3.5-flash-lite";
+        $model = "gemini-3.5-flash";
+        $verse = urldecode($request->input("verse"));
+        $verse_id = htmlspecialchars($request->input("verse_id"));
+        $translation = htmlspecialchars($request->input("translation"));
+        $comm_type = htmlspecialchars($request->input("type"));
+
+        $addon = $this->chooseCommentAddon($comm_type);
+
+        $question = $addon . $verse . $this->addon_postfix;
+
+
+        $data = [
+            'model' => $model,
+            'input' => $question,
+        ];
+
+        $ch = curl_init($url);
+
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'x-goog-api-key: ' . $this->key
+            ],
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_TIMEOUT => 90,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+
+        curl_close($ch);
+
+        if ($error) {
+            die("cURL Error: $error\n");
+        }
+
+        if ($httpCode === 200) {
+            $result = json_decode($response, true);
+        } else {
+            $result = json_decode($response, true);
+        }
+
+        if (!empty($result['steps'][1]['content'][0]['text'])) {
+            $answer = $result['steps'][1]['content'][0]['text'];
+            $model = $result["model"];
+        } else {
+            $answer = 'Ошибка';
+            $model = $result["model"];
+        }
+
+        $this->logToFile($result);
+
+        $answer_html = Str::markdown($answer);
+
+        $data = [
+            "translation" => $translation,
+            "verse_id" => $verse_id,
+            "comment" => $answer_html,
+            "model" => $model ?? '--',
+        ];
+
+        $template = "partials.ai-comment";
+
+        return view($template, $data);
+    }
+
     public function askMistral(Request $request)
     {
         $url = "https://api.mistral.ai/v1/chat/completions";
@@ -91,14 +168,12 @@ class AIController extends Controller
         return view($template, $data);
     }
 
-    public function askOpenRouter(Request $request)
+    public function askVercelProxy(Request $request)
     {
-        $apiKey = config("app.open_router_key");
-        $url = "https://openrouter.ai/api/v1/chat/completions";
+        $apiKey = config("app.open_router_key_1");
+        $url = "https://openrouter-proxy-plum.vercel.app/api/v1/chat/completions";
 
-        $model_gpt_oss = "openai/gpt-oss-120b:free"; // хороша
-
-        $temp = "0.7";
+        $model_gpt_oss = "nvidia/nemotron-3-super-120b-a12b:free";
         $verse = urldecode($request->input("verse"));
         $verse_id = htmlspecialchars($request->input("verse_id"));
         $translation = htmlspecialchars($request->input("translation"));
