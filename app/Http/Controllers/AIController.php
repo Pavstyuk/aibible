@@ -470,9 +470,8 @@ class AIController extends Controller
                 ->get()
                 ->all();
 
-            $comments += $current_comments;
+            array_push($comments, ...$current_comments);
         }
-
         // $comments = DB::table('ai_comments')
         //     ->latest()
         //     ->take($number)
