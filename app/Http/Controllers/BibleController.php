@@ -82,20 +82,24 @@ class BibleController extends Controller
         22,
     ];
 
-    public array $translations = ["rbo", "rst", "nasb"];
-
     public function buildVerses(string $param): array
     {
-        $verse_numbers = [];
-        $nums = explode("-", $param);
-        if (count($nums) > 1) {
-            for ($v = $nums[0]; $v <= $nums[1]; $v++) {
-                $verse_numbers[] = $this->clearIntParameter($v);
-            }
-        } else {
-            $verse_numbers[] = $this->clearIntParameter($param);
+        $param = trim($param);
+
+        if (! preg_match('/^\d+(?:-\d+)?$/', $param)) {
+            return [];
         }
-        return $verse_numbers;
+
+        $nums = array_map('intval', explode('-', $param, 2));
+        $start = $nums[0];
+        $end = $nums[1] ?? $start;
+
+        // Never allow a public URL to build an arbitrarily large range.
+        if ($start < 1 || $end < 1 || $end < $start || ($end - $start) > 200) {
+            return [];
+        }
+
+        return range($start, $end);
     }
 
     public function getWordsForTitle(string $text, int $count = 3): string
@@ -124,7 +128,7 @@ class BibleController extends Controller
             return "";
         }
 
-        if ($current_chapter < $this->chapters[$current_book]) {
+        if ($current_chapter < ($this->chapters[$current_book] ?? 1)) {
             $current_chapter++;
         } else {
             $current_book++;
@@ -147,7 +151,7 @@ class BibleController extends Controller
             $current_chapter--;
         } else {
             $current_book--;
-            $current_chapter = $this->chapters[$current_book];
+            $current_chapter = $this->chapters[$current_book] ?? 1;
         }
         $prev_link = "/$current_trans/$current_book/$current_chapter";
         return $prev_link;
@@ -157,6 +161,10 @@ class BibleController extends Controller
         string $current_trans,
         int $verse_id,
     ): string {
+        if (!$this->isValidTranslation($current_trans)) {
+            return "";
+        }
+
         $verse = DB::table($current_trans)->find($verse_id);
 
         if ($verse) {
@@ -170,6 +178,10 @@ class BibleController extends Controller
 
     public function createBookNav(string $current_trans)
     {
+        if (!$this->isValidTranslation($current_trans)) {
+            return [];
+        }
+
         $book_names = DB::table($current_trans)->pluck("book_name", "book_num");
         $books_menu = [];
         foreach ($book_names as $b => $name) {
@@ -180,7 +192,7 @@ class BibleController extends Controller
 
     public function createChapterNav(string $current_trans, int $current_book)
     {
-        $chapter_count = $this->chapters[$current_book];
+        $chapter_count = $this->chapters[$current_book] ?? 1;
         $chapters_menu = [];
         for ($c = 1; $c <= $chapter_count; $c++) {
             $chapters_menu[$c] = "/$current_trans/$current_book/$c";
@@ -203,7 +215,9 @@ class BibleController extends Controller
             $translation = $request->cookie("translation", "rbo");
         }
 
-        if (!in_array($translation, $this->translations)) {
+        $translation = $this->clearTranslationParameter($translation);
+
+        if (!$this->isValidTranslation($translation)) {
             return abort(404);
         }
 
@@ -213,7 +227,6 @@ class BibleController extends Controller
         if ($chapter_num === "") {
             $chapter_num = $request->cookie("chapter_num", 1);
         }
-        $translation = $this->clearTranslationParameter($translation);
         $book_num = $this->clearIntParameter($book_num);
         $chapter_num = $this->clearIntParameter($chapter_num);
 
@@ -307,9 +320,18 @@ class BibleController extends Controller
         string $verse_num,
     ) {
         $translation = $this->clearTranslationParameter($translation);
+
+        if (!$this->isValidTranslation($translation)) {
+            return abort(404);
+        }
+
         $book_num = $this->clearIntParameter($book_num);
         $chapter_num = $this->clearIntParameter($chapter_num);
         $verse_numbers = $this->buildVerses($verse_num);
+
+        if ($verse_numbers === []) {
+            return abort(404);
+        }
 
         if (count($verse_numbers) > 1) {
             $verse_display = $verse_numbers[0] . "-" . end($verse_numbers);
@@ -334,12 +356,12 @@ class BibleController extends Controller
         $verse_id = $text->first()->id;
         $verse_id_end = $text->last()->id;
 
-        $next_id = ++$text->last()->id;
-        $prev_id = --$text->first()->id;
+        $next_id = (int) $text->last()->id + 1;
+        $prev_id = (int) $text->first()->id - 1;
 
         $next_verse_link = $this->createVerseLink($translation, $next_id);
 
-        $prev_verse_link = $this->createVerseLink($translation, --$prev_id);
+        $prev_verse_link = $this->createVerseLink($translation, $prev_id);
 
         $full_text = "";
         foreach ($text as $item) {
@@ -364,7 +386,7 @@ class BibleController extends Controller
 
         $is_favorite = false;
 
-        if (!empty($request->user()->id)) {
+        if ($request->user()?->id) {
             $user_id = $request->user()->id;
             if ($verse_id === $verse_id_end) {
                 $ids = (string) $verse_id_end;
@@ -405,14 +427,25 @@ class BibleController extends Controller
 
     public function ajaxTextChapter(Request $request)
     {
-        $translation = $request->input("translation", "rbo");
-        $book_num = $request->input("book_num", 1);
-        $chapter_num = $request->input("chapter_num", 1);
-        $marked_verse = $request->input("marked_verse", 0);
+        $translationInput = $request->input("translation", "rbo");
+        $bookInput = $request->input("book_num", 1);
+        $chapterInput = $request->input("chapter_num", 1);
+        $markedVerseInput = $request->input("marked_verse", 0);
 
-        $translation = $this->clearTranslationParameter($translation);
-        $book_num = $this->clearIntParameter($book_num);
-        $chapter_num = $this->clearIntParameter($chapter_num);
+        $translation = $this->clearTranslationParameter(
+            is_string($translationInput) ? $translationInput : "rbo"
+        );
+        $book_num = $this->clearIntParameter(
+            is_scalar($bookInput) ? (string) $bookInput : "1"
+        );
+        $chapter_num = $this->clearIntParameter(
+            is_scalar($chapterInput) ? (string) $chapterInput : "1"
+        );
+        $marked_verse = is_scalar($markedVerseInput) ? (int) $markedVerseInput : 0;
+
+        if (!$this->isValidTranslation($translation)) {
+            return abort(404);
+        }
 
         $args = [
             "book_num" => $book_num,
@@ -452,8 +485,22 @@ class BibleController extends Controller
 
     function randomVerse(Request $request)
     {
-        $translation = $request->input("translation", "rbo");
+        $translationInput = $request->input("translation", "rbo");
+        $translation = strtolower((string) preg_replace(
+            '/[^a-z]/',
+            '',
+            is_string($translationInput) ? $translationInput : "rbo"
+        ));
+
+        if (!$this->isValidTranslation($translation)) {
+            $translation = "rbo";
+        }
+
         $max_id = DB::table($translation)->max("id");
+
+        if (!$max_id) {
+            return abort(404);
+        }
 
         $random_id = rand(1, $max_id);
 
@@ -462,6 +509,22 @@ class BibleController extends Controller
         ];
 
         $text = DB::table($translation)->where($args)->get();
+
+        if ($text->count() === 0) {
+            $text = DB::table($translation)
+                ->where('id', '>=', $random_id)
+                ->orderBy('id')
+                ->limit(1)
+                ->get();
+        }
+
+        if ($text->count() === 0) {
+            $text = DB::table($translation)->orderBy('id')->limit(1)->get();
+        }
+
+        if ($text->count() === 0) {
+            return abort(404);
+        }
 
         $book_title = $text[0]->book_name;
         $single_title = $this->getWordsForTitle($text[0]->verse);
@@ -529,9 +592,19 @@ class BibleController extends Controller
 
     function getRandomVerse(Request $request)
     {
-        $translation = $this->translations[array_rand($this->translations)];
+        $availableTranslations = config('bible.translations', []);
+
+        if ($availableTranslations === []) {
+            return abort(404);
+        }
+
+        $translation = $availableTranslations[array_rand($availableTranslations)];
 
         $max_id = DB::table($translation)->max("id");
+
+        if (!$max_id) {
+            return abort(404);
+        }
 
         $random_id = rand(1, $max_id);
 
@@ -540,6 +613,22 @@ class BibleController extends Controller
         ];
 
         $text = DB::table($translation)->where($args)->get();
+
+        if ($text->count() === 0) {
+            $text = DB::table($translation)
+                ->where('id', '>=', $random_id)
+                ->orderBy('id')
+                ->limit(1)
+                ->get();
+        }
+
+        if ($text->count() === 0) {
+            $text = DB::table($translation)->orderBy('id')->limit(1)->get();
+        }
+
+        if ($text->count() === 0) {
+            return abort(404);
+        }
 
         $data = [
             "translation" => $translation,

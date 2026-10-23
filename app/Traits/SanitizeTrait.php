@@ -22,4 +22,9 @@ trait SanitizeTrait
             strtolower($param)
         );
     }
+
+    public function isValidTranslation(string $translation): bool
+    {
+        return in_array($translation, config('bible.translations', []), true);
+    }
 }

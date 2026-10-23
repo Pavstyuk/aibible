@@ -5,7 +5,7 @@
         <header
             class="grid-item column-span-2 the-card back-color-second border-radius-norm height-half flex flex-column flex-justify-end gap-1rem">
             <h1 class="mb-0 mt-0 width-read text-balance">
-                <span class="text-color-second font-size-norm">{{ env('APP_NAME') }}</span><br />
+                <span class="text-color-second font-size-norm">{{ config('app.name') }}</span><br />
                 {{ __('Согласие на обработку персональных данных') }}
             </h1>
         </header>

@@ -167,8 +167,8 @@
                 <table>
                     <tr>
                         <td align="center" class="masthead">
-                            <img width="580" height="326" alt="{{ env('APP_FULLNAME') }}"
-                                src="{{ env('APP_URL') }}/assets/img/mail-header.jpg">
+                            <img width="580" height="326" alt="{{ config('app.name') }}"
+                                src="{{ config('app.url') }}/assets/img/mail-header.jpg">
                         </td>
                     </tr>
                     <tr>
@@ -192,7 +192,7 @@
                     </tr>
                     <tr>
                         <td class="content" style="background-color:#e7e7e7;" align="center">
-                            <a href="mailto:{{ env('MAIL_FROM_ADDRESS') }}">{{ env('MAIL_FROM_ADDRESS') }}</a><br>
+                            <a href="mailto:{{ config('mail.from.address') }}">{{ config('mail.from.address') }}</a><br>
                         </td>
                     <tr>
                 </table>

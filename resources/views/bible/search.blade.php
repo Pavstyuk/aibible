@@ -47,7 +47,9 @@
                     <p class="mb-05">
                         <em>
                             @php
-                                echo preg_replace("/$search_query/iu", "<b>$search_query</b>", $verse->verse);
+                                $highlightPattern = '/' . preg_quote(e($search_query), '/') . '/iu';
+                                $verseText = e($verse->verse);
+                                echo preg_replace($highlightPattern, '<b>$0</b>', $verseText) ?? $verseText;
                             @endphp
                         </em>
                         <br><cite>({{ $verse->book_name }} {{ $verse->chapter_num }}:{{ $verse->verse_num }})</cite>

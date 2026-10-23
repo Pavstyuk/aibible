@@ -1,13 +1,17 @@
 console.log("AI Bible Main Script");
 
+var themeButton = document.getElementById("toggle-theme-button");
+
 if (
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches
 ) {
     if (getCookie("apptheme") === "dark-mode") {
         document.body.classList.add("dark-mode");
-        themeButton.querySelector(".bx").classList.add("bx-sun");
-        themeButton.querySelector(".bx").classList.remove("bx-moon");
+        if (themeButton) {
+            themeButton.querySelector(".bx").classList.add("bx-sun");
+            themeButton.querySelector(".bx").classList.remove("bx-moon");
+        }
     }
 }
 
@@ -17,12 +21,16 @@ window
         let newColorScheme = event.matches ? "dark" : "light";
         if (newColorScheme == "dark") {
             document.body.classList.add("dark-mode");
-            themeButton.querySelector(".bx").classList.remove("bx-sun");
-            themeButton.querySelector(".bx").classList.add("bx-moon");
+            if (themeButton) {
+                themeButton.querySelector(".bx").classList.remove("bx-sun");
+                themeButton.querySelector(".bx").classList.add("bx-moon");
+            }
         } else {
             document.body.classList.remove("dark-mode");
-            themeButton.querySelector(".bx").classList.add("bx-sun");
-            themeButton.querySelector(".bx").classList.remove("bx-moon");
+            if (themeButton) {
+                themeButton.querySelector(".bx").classList.add("bx-sun");
+                themeButton.querySelector(".bx").classList.remove("bx-moon");
+            }
         }
     });
 function toggleTheme() {
@@ -154,14 +162,12 @@ function setValues(token) {
     var verse_id = commentElement.dataset.id;
     var translation = commentElement.dataset.translation;
     var model = commentElement.dataset.model;
-    var user_id = commentElement.dataset.user;
 
     return {
         translation: translation,
         verse_id: verse_id,
         ai_comment: `${commentHTML}`,
         model: model,
-        user_id: user_id,
         _token: token,
     };
 }

@@ -1,5 +1,10 @@
+@php
+    $safeComment = \App\Support\HtmlSanitizer::clean(
+        htmlspecialchars_decode((string) $comment->ai_comment)
+    );
+@endphp
  <article id="ai-comment-{{ $comment->id }}" class="the-card-small border-thin border-color-gray border-radius-norm">
-     {!! htmlspecialchars_decode($comment->ai_comment) !!}
+     {!! $safeComment !!}
      <p class="text-right font-size-smaller mb-0"><i>{{ __('Автор:') }} {{ ' ' . $comment->model }}</i>
      </p>
      <p class="text-right font-size-smaller mb-0">

@@ -13,6 +13,10 @@ class BibleMenuController extends Controller
 
     public function createBookNav(string $current_trans)
     {
+        if (!in_array($current_trans, config('bible.translations', []), true)) {
+            return [];
+        }
+
         $book_names = DB::table($current_trans)->pluck('book_name', 'book_num');
         $books_menu = [];
         foreach ($book_names as $b => $name) {
@@ -23,7 +27,7 @@ class BibleMenuController extends Controller
 
     public function createChapterNav(string $current_trans, int $current_book)
     {
-        $chapter_count = $this->chapters[$current_book];
+        $chapter_count = $this->chapters[$current_book] ?? 1;
         $chapters_menu = [];
         for ($c = 1; $c <= $chapter_count; $c++) {
             $chapters_menu[$c] = "/$current_trans/$current_book/$c";
@@ -34,8 +38,8 @@ class BibleMenuController extends Controller
 
     public function books(Request $request)
     {
-        $translation = $request->cookie('translation', 'rbo');
-        $book_num = $request->cookie('book_num', 1);
+        $translation = $this->normalizeTranslation($request->cookie('translation', 'rbo'));
+        $book_num = $this->normalizeBookNumber($request->cookie('book_num', 1));
 
         $book_names = DB::table($translation)->pluck('book_name', 'book_num');
         $book_name = $book_names[$book_num] ?? '';
@@ -56,9 +60,9 @@ class BibleMenuController extends Controller
     public function chapters(Request $request)
     {
 
-        $translation = $request->cookie('translation', 'rbo');
-        $book_num = $request->cookie('book_num', 1);
-        $chapter_num = $request->cookie('chapter_num', 1);
+        $translation = $this->normalizeTranslation($request->cookie('translation', 'rbo'));
+        $book_num = $this->normalizeBookNumber($request->cookie('book_num', 1));
+        $chapter_num = max(1, (int) $request->cookie('chapter_num', 1));
 
 
         $book_names = DB::table($translation)->pluck('book_name', 'book_num');
@@ -78,9 +82,9 @@ class BibleMenuController extends Controller
     public function translations(Request $request)
     {
 
-        $translation = $request->cookie('translation', 'rbo');
-        $book_num = $request->cookie('book_num', 1);
-        $chapter_num = $request->cookie('chapter_num', 1);
+        $translation = $this->normalizeTranslation($request->cookie('translation', 'rbo'));
+        $book_num = $this->normalizeBookNumber($request->cookie('book_num', 1));
+        $chapter_num = max(1, (int) $request->cookie('chapter_num', 1));
 
         $translations = DB::table('bibles')->get();
 
@@ -90,6 +94,10 @@ class BibleMenuController extends Controller
 
         $list = [];
         foreach ($translations as $item) {
+            if (!in_array($item->translation_slug, config('bible.translations', []), true)) {
+                continue;
+            }
+
             $list[] = [
                 'slug' => $item->translation_slug,
                 'name' => $item->translation_name,
@@ -107,5 +115,21 @@ class BibleMenuController extends Controller
                 'chapter_num'   => $chapter_num,
             ]
         );
+    }
+
+    private function normalizeTranslation(string $translation): string
+    {
+        $translation = strtolower((string) preg_replace('/[^a-z]/', '', $translation));
+
+        return in_array($translation, config('bible.translations', []), true)
+            ? $translation
+            : 'rbo';
+    }
+
+    private function normalizeBookNumber(string|int $bookNum): int
+    {
+        $bookNum = (int) $bookNum;
+
+        return ($bookNum >= 1 && $bookNum <= 66) ? $bookNum : 1;
     }
 }

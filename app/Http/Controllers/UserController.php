@@ -2,150 +2,115 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
-use Illuminate\Foundation\Auth\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
     public function index(Request $request, int $id = 0)
     {
-        if (empty($id) || $id === 0) {
+        if ($id === 0) {
             return abort(404);
         }
 
-        $user_id = $request->user()->id;
+        $user = $request->user();
 
-        if (empty($user_id)) {
+        if (! $user || (int) $user->id !== $id) {
             return abort(404);
         }
 
-        if ($user_id && $id !== $user_id) {
-            return abort(404);
-        }
+        $userName = $user->name;
 
-        $user_name = $request->user()->name;
-
-        $seo_title = "Панель управления $user_name";
-        $seo_description =
-            "Панель управления $user_name" . " " . config("app.desc");
+        $seoTitle = "Панель управления {$userName}";
+        $seoDescription = "Панель управления {$userName}" . ' ' . config('app.desc');
 
         $data = [
-            "user_id" => $user_id,
-            "user_name" => $user_name,
-            "translation" => $request->cookie("translation", "rbo"),
-            "book_num" => $request->cookie("book_num", 1),
-            "chapter_num" => $request->cookie("chapter_num", 1),
-            "seo_title" => $seo_title,
-            "seo_description" => $seo_description,
-            "theme" => $_COOKIE["apptheme"] ?? "",
+            'user_id' => $user->id,
+            'user_name' => $userName,
+            'translation' => $request->cookie('translation', 'rbo'),
+            'book_num' => $request->cookie('book_num', 1),
+            'chapter_num' => $request->cookie('chapter_num', 1),
+            'seo_title' => $seoTitle,
+            'seo_description' => $seoDescription,
+            'theme' => $_COOKIE['apptheme'] ?? '',
         ];
 
-        $template = "user.dashboard";
-
-        return view($template, $data);
+        return view('user.dashboard', $data);
     }
 
-    function editUser(Request $request, int $id = 0)
+    public function editUser(Request $request, int $id = 0)
     {
-        if (empty($id) || $id === 0) {
+        if ($id === 0) {
             return abort(404);
         }
 
-        $user_id = $request->user()->id;
+        $user = $request->user();
 
-        if (empty($user_id)) {
+        if (! $user || (int) $user->id !== $id) {
             return abort(404);
         }
 
-        if ($user_id && $id !== $user_id) {
-            return abort(404);
-        }
-
-        $user_name = $request->user()->name;
-        $user_email = $request->user()->email;
-
-        $seo_title = "Обновить $user_name";
-        $seo_description =
-            "Панель управления $user_name" . " " . config("app.desc");
+        $seoTitle = "Обновить {$user->name}";
+        $seoDescription = "Панель управления {$user->name}" . ' ' . config('app.desc');
 
         $data = [
-            "user_id" => $user_id,
-            "user_name" => $user_name,
-            "user_email" => $user_email,
-            "translation" => $request->cookie("translation", "rbo"),
-            "book_num" => $request->cookie("book_num", 1),
-            "chapter_num" => $request->cookie("chapter_num", 1),
-            "seo_title" => $seo_title,
-            "seo_description" => $seo_description,
-            "theme" => $_COOKIE["apptheme"] ?? "",
+            'user_id' => $user->id,
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+            'translation' => $request->cookie('translation', 'rbo'),
+            'book_num' => $request->cookie('book_num', 1),
+            'chapter_num' => $request->cookie('chapter_num', 1),
+            'seo_title' => $seoTitle,
+            'seo_description' => $seoDescription,
+            'theme' => $_COOKIE['apptheme'] ?? '',
         ];
 
-        $template = "user.edit";
-
-        return view($template, $data);
+        return view('user.edit', $data);
     }
 
-    function updateUser(Request $request, int $id = 0)
+    public function updateUser(Request $request, int $id = 0)
     {
-        if (empty($id) || $id === 0) {
+        if ($id === 0) {
             return abort(404);
         }
 
-        $user_id = $request->user()->id;
+        $user = $request->user();
 
-        if (empty($user_id)) {
+        if (! $user || (int) $user->id !== $id) {
             return abort(404);
         }
 
-        if ($user_id && $id !== $user_id) {
-            return abort(404);
-        }
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'min:2', 'max:255'],
+        ]);
 
-        $name = htmlspecialchars($request->input("name"));
-        $email = htmlspecialchars($request->input("email"));
+        $name = trim(strip_tags($validated['name']));
 
-        $user = User::where("email", $email)->first();
-
-        if ($user->name === $name) {
+        if ($name === '') {
             return back()
-                ->withErrors([
-                    "name" => "Ваше имя осталось прежним: <i>$user->name</i>",
-                ])
+                ->withErrors(['name' => 'Имя не может быть пустым.'])
                 ->withInput();
         }
 
-        if ($user) {
-            try {
-                $user->name = $name;
-                $user->save();
-            } catch (Exception $e) {
-                return back()
-                    ->withErrors([
-                        "name" => "Ошибка сохранения имени. Имя <i>$user->name</i> уже занято",
-                    ])
-                    ->withInput();
-            }
-        } else {
+        if ($name === $user->name) {
             return back()
-                ->withErrors([
-                    "email" => "Странно не могу найти пользователя с email <i>$user->email</i>",
-                ])
+                ->withErrors(['name' => 'Ваше имя осталось прежним.'])
                 ->withInput();
         }
 
-        if ($user->wasChanged()) {
-            Auth::login($user);
-            return redirect()
-                ->route("dashboard", ["id" => $user->id])
-                ->with("status", "Вы обновили свое имя, $user->name");
-        } else {
+        try {
+            $user->name = $name;
+            $user->save();
+        } catch (QueryException $exception) {
+            report($exception);
+
             return back()
-                ->withErrors([
-                    "name" => "Ошибка сохранения имени. Имя <i>$user->name</i> уже занято",
-                ])
+                ->withErrors(['name' => 'Это имя уже занято. Выберите другое.'])
                 ->withInput();
         }
+
+        return redirect()
+            ->route('dashboard', ['id' => $user->id])
+            ->with('status', "Вы обновили свое имя, {$user->name}");
     }
 }

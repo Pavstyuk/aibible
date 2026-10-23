@@ -9,6 +9,7 @@
         </div>
     @endif
     <form action="{{ route('registration.store') }}" method="post">
+        <input type="hidden" name="email_key" value="{{ $email_key }}">
         <div class="mb-1">
             <label class="required" for="reg-email">{{ __('Email') }}</label>
             <input type="email" name="email" id="reg-email" placeholder="{{ __('Email') }}"

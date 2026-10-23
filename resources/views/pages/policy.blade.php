@@ -5,7 +5,7 @@
         <header
             class="grid-item column-span-2 the-card back-color-second border-radius-norm height-half flex flex-column flex-justify-end gap-1rem">
             <h1 class="mb-0 mt-0 width-read text-balance">
-                <span class="text-color-second font-size-norm">{{ env('APP_NAME') }}</span><br />
+                <span class="text-color-second font-size-norm">{{ config('app.name') }}</span><br />
                 {{ __('Политика в отношении обработки персональных данных') }}
             </h1>
         </header>
@@ -27,7 +27,7 @@
 
             <p>1.3 Настоящая Политика применяется ко всей информации, которую Оператор может получить о посетителях
                 веб-сайта
-                business-trener.ru (далее — «Сайт»).</p>
+                aibible.ru (далее — «Сайт»).</p>
 
 
             <p>1.4 Использование Пользователем Сайта означает безоговорочное согласие с настоящей Политикой и указанными в

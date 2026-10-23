@@ -72,26 +72,30 @@
                 <p class="text-center font-size-small mb-2">Необходимо <a href="{{ route('login') }}">войти в свой
                         аккаунт</a>, чтобы использовать функционал ИИ</p>
             @endif
-
-            <div class="grid grid-two-column gap-1rem mb-2 {{ $class_inactive }}">
-                <button hx-get="{{ route('ask-ai', ['type' => 'comment']) }}" hx-target="#ai-comment" hx-trigger="click"
-                    hx-vals='{"verse": "{{ $val }}", "verse_id": "{{ $verse_id }}", "translation": "{{ $translation }}", "_token": "{{ csrf_token() }}"}'
-                    hx-swap="innerHTML" hx-on::after-request="this.remove()"
-                    class="button button-gray htmx-button button-width-full">{{ __('Общий комментарий') }}</button>
-                <button hx-get="{{ route('ask-ai', ['type' => 'lexical']) }}" hx-target="#ai-comment" hx-trigger="click"
-                    hx-vals='{"verse": "{{ $val }}", "verse_id": "{{ $verse_id }}", "translation": "{{ $translation }}", "_token": "{{ csrf_token() }}"}'
-                    hx-swap="innerHTML" hx-on::after-request="this.remove()"
-                    class="button button-gray htmx-button button-width-full">{{ __('Лексический анализ') }}</button>
-
-                <button hx-get="{{ route('ask-ai', ['type' => 'questions']) }}" hx-target="#ai-comment" hx-trigger="click"
-                    hx-vals='{"verse": "{{ $val }}", "verse_id": "{{ $verse_id }}", "translation": "{{ $translation }}", "_token": "{{ csrf_token() }}"}'
-                    hx-swap="innerHTML" hx-on::after-request="this.remove()"
-                    class="button button-gray htmx-button button-width-full">{{ __('Вопросы для обсуждения') }}</button>
-                <button hx-get="{{ route('ask-ai', ['type' => 'sermon']) }}" hx-target="#ai-comment" hx-trigger="click"
-                    hx-vals='{"verse": "{{ $val }}", "verse_id": "{{ $verse_id }}", "translation": "{{ $translation }}", "_token": "{{ csrf_token() }}"}'
-                    hx-swap="innerHTML" hx-on::after-request="this.remove()"
-                    class="button button-gray htmx-button button-width-full">{{ __('Простая проповедь') }}</button>
-            </div>
+            @auth
+                <div class="grid gap-1rem mb-2 {{ $class_inactive }}">
+                    <form method="POST" action="{{ route('ask-ai', ['post-key' => 'htmx-post']) }}"
+                        hx-post="{{ route('ask-ai', ['post-key' => 'htmx-post']) }}" hx-target="#ai-comment"
+                        hx-trigger="submit[validateForm(this)]" hx-swap="innerHTML">
+                        <select class="chevron border-radius-tiny" name="type" id="type" required>
+                            <option value="" disabled selected>-- Запрос --</option>
+                            <option value="comment">{{ __('Общий комментарий') }}</option>
+                            <option value="lexical">{{ __('Лексический анализ') }}</option>
+                            <option value="questions">{{ __('Вопросы для обсуждения') }}</option>
+                            <option value="sermon">{{ __('Простая проповедь') }}</option>
+                        </select>
+                        <input type="hidden" name="verse" value="{{ $val }}">
+                        <input type="hidden" name="verse_id" value="{{ $verse_id }}">
+                        <input type="hidden" name="translation" value="{{ $translation }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="_key" value="">
+                        <div class="mt-1">
+                            <button type="submit" class="button button-gray htmx-button button-width-full">Отправить
+                                запрос</button>
+                        </div>
+                    </form>
+                </div>
+            @endauth
             <div id="ai-comment" class="ai-comment-wrapper mt-1"></div>
 
             @if (!empty($comments[0]))
