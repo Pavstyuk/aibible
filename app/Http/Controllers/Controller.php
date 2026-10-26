@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-abstract class Controller
-{
-    //
-}
+use App\Traits\SanitizeTrait;
+use Illuminate\Support\Facades\DB;
+
+abstract class Controller {}

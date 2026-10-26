@@ -5,82 +5,42 @@ namespace App\Http\Controllers;
 use App\Traits\SanitizeTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AIController;
-use App\Models\Favorite;
+use Illuminate\Support\Facades\DB;
 
 class BibleController extends Controller
 {
+
     use SanitizeTrait;
 
-    public array $chapters = [
-        1 => 50,
-        2 => 40,
-        3 => 27,
-        36,
-        34,
-        24,
-        21,
-        4,
-        31,
-        24,
-        22,
-        25,
-        29,
-        36,
-        10,
-        13,
-        10,
-        42,
-        150,
-        31,
-        12,
-        8,
-        66,
-        52,
-        5,
-        48,
-        12,
-        14,
-        3,
-        9,
-        1,
-        4,
-        7,
-        3,
-        3,
-        3,
-        2,
-        14,
-        4,
-        28,
-        16,
-        24,
-        21,
-        28,
-        5,
-        5,
-        3,
-        5,
-        1,
-        1,
-        1,
-        16,
-        16,
-        13,
-        6,
-        6,
-        4,
-        4,
-        5,
-        3,
-        6,
-        4,
-        3,
-        1,
-        13,
-        22,
-    ];
+    public array $chapters = [];
+
+    private ?string $chaptersTranslation = null;
+
+    public function getChaptersCount(string $translation): array
+    {
+
+        if (!$this->isValidTranslation($translation)) {
+            return [];
+        }
+
+        if ($this->chaptersTranslation === $translation) {
+            return $this->chapters;
+        }
+
+        $this->chapters = DB::table($translation)
+            ->selectRaw('book_num, COUNT(DISTINCT chapter_num) AS chapters_count')
+            ->groupBy('book_num')
+            ->orderBy('book_num')
+            ->pluck('chapters_count', 'book_num')
+            ->map(fn($count) => (int) $count)
+            ->all();
+
+        $this->chaptersTranslation = $translation;
+
+        return $this->chapters;
+    }
+
 
     public function buildVerses(string $param): array
     {
@@ -128,6 +88,8 @@ class BibleController extends Controller
             return "";
         }
 
+        $this->getChaptersCount($current_trans);
+
         if ($current_chapter < ($this->chapters[$current_book] ?? 1)) {
             $current_chapter++;
         } else {
@@ -146,6 +108,8 @@ class BibleController extends Controller
         if ($current_book === 1 && $current_chapter === 1) {
             return "";
         }
+
+        $this->getChaptersCount($current_trans);
 
         if ($current_chapter !== 1) {
             $current_chapter--;
@@ -192,6 +156,7 @@ class BibleController extends Controller
 
     public function createChapterNav(string $current_trans, int $current_book)
     {
+        $this->getChaptersCount($current_trans);
         $chapter_count = $this->chapters[$current_book] ?? 1;
         $chapters_menu = [];
         for ($c = 1; $c <= $chapter_count; $c++) {
