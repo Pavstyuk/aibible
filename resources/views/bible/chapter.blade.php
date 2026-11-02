@@ -9,6 +9,27 @@
             <span class="font-size-bigger text-color-second">{{ __('Глава') }} {{ $chapter_num }}</span>
         </h1>
 
+        @if ($audio_mp3 || $audio_ogg)
+            <figure class="mb-2 width-fit">
+                <figcaption class="font-size-smaller text-color-second mb-05"><b>Слушать книгу {{ $book }},
+                        {{ __('Глава') }}
+                        {{ $chapter_num }}</b>
+                </figcaption>
+                <div class="mb-05 border-radius-small">
+                    <audio class="block" controls>
+                        @if ($audio_mp3)
+                            <source src="{{ config('app.url') . $audio_mp3 }}" type="audio/mpeg">
+                        @endif
+                        @if ($audio_ogg)
+                            <source src="{{ config('app.url') . $audio_ogg }}" type="audio/ogg">
+                        @endif
+                    </audio>
+                </div>
+                <a class="block text-color-second font-size-tiny width-fit" href="{{ config('app.url') . $audio_mp3 }}"
+                    download="">Скачать</a>
+            </figure>
+        @endif
+
         @foreach ($text as $verse)
             @if (in_array($verse->verse_num, $marked_arr))
                 @php

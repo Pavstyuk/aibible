@@ -252,6 +252,15 @@ class BibleController extends Controller
             " | " .
             config("app.desc");
 
+        if (in_array($translation, ['rbo', 'rst'])) {
+            $audio = "/storage/audio/{$translation}/{$book_num}/{$chapter_num}";
+            $audio_mp3 = $audio . '.mp3';
+            $audio_ogg = $audio . '.ogg';
+        } else {
+            $audio_mp3 = null;
+            $audio_ogg = null;
+        }
+
         $data = [
             "translation" => $translation,
             "book_num" => $book_num,
@@ -265,6 +274,8 @@ class BibleController extends Controller
             "chapters_nav" => $chapter_nav,
             "seo_title" => $seo_title,
             "seo_description" => $seo_description,
+            "audio_mp3" => $audio_mp3,
+            "audio_ogg" => $audio_ogg,
             "theme" => $_COOKIE["apptheme"] ?? "",
         ];
 

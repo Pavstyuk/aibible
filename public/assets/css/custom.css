@@ -372,6 +372,24 @@ a.nav-link:focus-visible {
     margin-bottom: 2rem;
 }
 
+@supports (-moz-appearance: none) {
+    audio {
+        filter: invert(1);
+    }
+
+    .dark-mode audio {
+        filter: invert(0);
+    }
+}
+
+@supports (not (-moz-appearance: none)) and (contain: paint) and
+    (-webkit-appearance: none) {
+    /* Стили применятся только в Chrome, Edge, Opera и других Chromium-браузерах */
+    .dark-mode audio {
+        filter: invert(1);
+    }
+}
+
 @media screen and (max-width: 1024px) {
     .home-random-verse {
         min-height: 20rem;
