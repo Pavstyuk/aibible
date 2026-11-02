@@ -67,6 +67,8 @@ Route::get('/search', [SearchController::class, 'search'])
 Route::get('/random', [BibleController::class, 'randomVerse'])
     ->middleware('throttle:public')
     ->name('random');
+Route::get('/api', [PageController::class, 'apiPage'])
+    ->name('api');
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'store'])

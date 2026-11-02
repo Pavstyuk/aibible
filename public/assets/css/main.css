@@ -261,6 +261,13 @@ ul {
     margin: 2rem 0;
 }
 
+pre {
+    background-color: var(--color-back-second);
+    padding: 1rem;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
 .line-height-min {
     line-height: 1;
 }
