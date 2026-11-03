@@ -265,7 +265,8 @@ pre {
     background-color: var(--color-back-second);
     padding: 1rem;
     overflow-x: auto;
-    max-width: 100%;
+    width: 100%;
+    max-width: calc(100vw - 2rem);
 }
 
 .line-height-min {
