@@ -11,6 +11,10 @@
                         <i class="bx bx-shuffle font-size-big block text-color-second"></i> <span>Случайный
                             отрывок</span>
                     </a>
+                    <a class="nav-link text-color-norm flex flex-align-center gap-05rem" href="{{ Route('audio') }}">
+                        <i class="bx bx-equalizer font-size-big block text-color-second"></i> <span>Слушать
+                            Библию</span>
+                    </a>
                     @if (auth()->id() > 0)
                         <a class="nav-link text-color-norm flex flex-align-center gap-05rem"
                             href="{{ Route('favorites-user', ['id' => auth()->id()]) }}">
