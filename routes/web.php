@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AIController;
+use App\Http\Controllers\AudioController;
 use App\Http\Controllers\BibleController;
 use App\Http\Controllers\BibleMenuController;
 use App\Http\Controllers\FavoriteController;
@@ -24,6 +25,8 @@ Route::prefix('htmx')->group(function () {
     Route::get('/random-verse', [BibleController::class, 'getRandomVerse'])
         ->middleware('throttle:public')
         ->name('random-verse');
+    Route::get('/load', [AudioController::class, 'load'])
+        ->name('audio.load');
 
     Route::middleware('auth')->group(function () {
         Route::post('/ask-ai', [AIController::class, 'askAi'])
@@ -69,6 +72,8 @@ Route::get('/random', [BibleController::class, 'randomVerse'])
     ->name('random');
 Route::get('/api', [PageController::class, 'apiPage'])
     ->name('api');
+Route::get('/audio', [AudioController::class, 'index'])
+    ->name('audio');
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'store'])

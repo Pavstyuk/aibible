@@ -1026,7 +1026,6 @@ input[type="password"],
 input[type="search"],
 input[type="number"],
 input[type="tel"],
-input[type="range"],
 input[type="date"],
 input[type="month"],
 input[type="week"],
@@ -1062,7 +1061,6 @@ input[type="password"]:focus,
 input[type="search"]:focus,
 input[type="number"]:focus,
 input[type="tel"]:focus,
-input[type="range"]:focus,
 input[type="date"]:focus,
 input[type="month"]:focus,
 input[type="week"]:focus,
@@ -1512,14 +1510,8 @@ input[type="submit"].button-rounded {
 }
 
 .button.button-second {
-    background: linear-gradient(
-        30deg,
-        var(--color-second-dark),
-        var(--color-second-light),
-        var(--color-second)
-    );
-    color: var(--color-main-constant);
-    background-size: 175% auto;
+    background-color: var(--color-second-light);
+    color: var(--color-text);
 }
 
 .button.button-second:hover {
@@ -1629,7 +1621,12 @@ button.button.button-border-hover:hover {
 }
 
 .button-dark.button-hover::after {
-    background-color: var(--color-back-accent);
+    background-color: var(--color-main);
+    color: var(--color-white);
+}
+.button-second.button-hover::after {
+    background-color: var(--color-second);
+    color: var(--color-white);
 }
 
 .button > .bx {

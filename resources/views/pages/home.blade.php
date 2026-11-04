@@ -22,6 +22,8 @@
                     @endphp
                     <a class="button button-main button-hover button-mobile-width-full"
                         href="/{{ Cookie::get('translation', 'rbo') }}/{{ Cookie::get('book_num', '1') }}/{{ Cookie::get('chapter_num', '1') }}">{{ $button_text }}</a>
+                    <a href="/audio" class="button button-dark button-hover button-mobile-width-full">Слушать аудио
+                        Библию</a>
                 </nav>
             </header>
             <div class="grid-item home-random-verse the-card-small border-thin border-color-gray border-radius-norm flex flex-column gap-2rem flex-justify-space-between"
