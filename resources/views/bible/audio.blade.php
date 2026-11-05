@@ -39,14 +39,16 @@
 
             <div class="">
                 <div class="flex flex-align-center flex-justify-center gap-1rem mb-1">
-                    <button id="switch-prev" class="button-audio button-prev" onclick="window.player.playPrev()">
+                    <button id="switch-prev" class="button-audio button-prev" onclick="window.player.playPrev()"
+                        aria-label="Назад">
                         <i class='bxf bx-skip-previous'></i>
                     </button>
                     <button id="play-pause" class="button-audio button-play" onclick="window.player.playPause(this)"
-                        data-state="pause">
+                        data-state="pause" aria-label="Включить / пауза">
                         <i class='bxf bx-play'></i>
                     </button>
-                    <button id="switch-next" class="button-audio button-next" onclick="window.player.playNext()">
+                    <button id="switch-next" class="button-audio button-next" onclick="window.player.playNext()"
+                        aria-label="Вперед">
                         <i class="bxf bx-skip-next"></i>
                     </button>
                 </div>

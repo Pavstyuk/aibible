@@ -9,8 +9,9 @@
 
 <footer
     class="app-footer back-color-second the-card flex flex-column gap-1rem flex-justify-center flex-align-center font-weight-norm">
-    <nav class="flex flex-wrap gap-1rem justify-content-center align-items-center">
+    <nav class="flex flex-wrap gap-1rem flex-justify-center flex-align-center">
         <a class="font-size-small text-color-second" href="{{ route('api') }}">Библия API</a>
+        <a class="font-size-small text-color-second" href="{{ route('audio') }}">Аудио Библия</a>
         <a class="font-size-small text-color-second" href="{{ route('policy') }}">Политика конфиденциальности</a>
         <a class="font-size-small text-color-second" href="{{ route('privacy') }}">Согласие на обработку ПД</a>
     </nav>
