@@ -374,7 +374,7 @@ a.nav-link:focus-visible {
 
 @supports (-moz-appearance: none) {
     audio {
-        filter: invert(1);
+        filter: invert(1) hue-rotate(180deg);
     }
 
     .dark-mode audio {
