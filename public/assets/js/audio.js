@@ -24,6 +24,14 @@ class Player {
         this.audio.addEventListener("loadedmetadata", () =>
             this.updateDuration(),
         );
+        this.audio.addEventListener("play", () =>
+            this.setMediaSessionPlaybackState("playing"),
+        );
+        this.audio.addEventListener("pause", () =>
+            this.setMediaSessionPlaybackState("paused"),
+        );
+
+        this.setupMediaSession();
     }
 
     init() {
@@ -62,6 +70,7 @@ class Player {
                 if (error.name === "AbortError") return;
                 console.error("Не удалось воспроизвести трек:", error);
                 this.setPlayPauseButtonState("pause");
+                this.setMediaSessionPlaybackState("paused");
             });
         }
     }
@@ -152,25 +161,122 @@ class Player {
 
         this.durationDisplay.value = this.formatTime(seconds);
         this.positionInput.max = seconds;
+        this.updateMediaSessionPosition();
     }
 
     setPosition(val) {
         this.audio.currentTime = val;
         this.positionDisplay.value = this.formatTime(this.audio.currentTime);
+        this.updateMediaSessionPosition();
     }
 
     updatePosition() {
         this.positionDisplay.value = this.formatTime(this.audio.currentTime);
         this.positionInput.value = this.audio.currentTime;
+        this.updateMediaSessionPosition();
     }
 
     updateName(track) {
         this.trackName = track.textContent.trim();
+        this.updateMediaSession(track);
+
         if (this.nameElement) {
             this.nameElement.textContent = `${this.trackName}:`;
             return true;
         } else {
             return false;
+        }
+    }
+
+    setupMediaSession() {
+        if (!("mediaSession" in navigator)) return;
+
+        var setHandler = (action, handler) => {
+            try {
+                navigator.mediaSession.setActionHandler(action, handler);
+            } catch (error) {
+                // Браузер не поддерживает это действие — это нормально.
+            }
+        };
+
+        setHandler("play", () => {
+            if (this.audio.paused) this.playAudio();
+        });
+        setHandler("pause", () => {
+            if (!this.audio.paused) this.pauseAudio();
+        });
+        setHandler("previoustrack", () => this.playPrev());
+        setHandler("nexttrack", () => this.playNext());
+
+        setHandler("seekbackward", (details) => {
+            var offset = details.seekOffset || 10;
+            this.setPosition(Math.max(0, this.audio.currentTime - offset));
+        });
+        setHandler("seekforward", (details) => {
+            var offset = details.seekOffset || 10;
+            var target = this.audio.currentTime + offset;
+            this.setPosition(
+                Number.isFinite(this.audio.duration)
+                    ? Math.min(target, this.audio.duration)
+                    : target,
+            );
+        });
+        setHandler("seekto", (details) => {
+            if (details.seekTime == null) return;
+            this.setPosition(details.seekTime);
+        });
+    }
+
+    setMediaSessionPlaybackState(state) {
+        if ("mediaSession" in navigator) {
+            navigator.mediaSession.playbackState = state;
+        }
+    }
+
+    updateMediaSession(track) {
+        if (!("mediaSession" in navigator) || !("MediaMetadata" in window)) {
+            return;
+        }
+
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: track.textContent.trim(),
+            artist: "Онлайн Библия",
+            album:
+                document
+                    .querySelector("#list-wrapper h2")
+                    ?.textContent.trim() ?? "",
+            artwork: [
+                {
+                    src: new URL(
+                        "/assets/favicon/web-app-manifest-512x512.png",
+                        location.origin,
+                    ).href,
+                    sizes: "512x512",
+                    type: "image/png",
+                },
+            ],
+        });
+    }
+
+    updateMediaSessionPosition() {
+        if (
+            !("mediaSession" in navigator) ||
+            !navigator.mediaSession.setPositionState
+        ) {
+            return;
+        }
+
+        var duration = this.audio.duration;
+        if (!Number.isFinite(duration) || duration <= 0) return;
+
+        try {
+            navigator.mediaSession.setPositionState({
+                duration: duration,
+                playbackRate: this.audio.playbackRate || 1,
+                position: Math.min(Math.max(0, this.audio.currentTime), duration),
+            });
+        } catch (error) {
+            // Некоторые браузеры могут бросить исключение — игнорируем.
         }
     }
 

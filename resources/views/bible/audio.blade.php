@@ -54,10 +54,10 @@
                 </div>
                 <div class="mb-05">
                     <label for="range-position" class="flex flex-align-center gap-05rem">
-                        <i class="bx bx-rotate-cw"></i> <span id="track-name"></span> <span><output id="display-position"
-                                for="range-position" class="display-position" value="--:--">--:--</output> / <output
-                                id="display-duration" for="range-position" class="display-duration"
-                                value="--:--">--:--</output></span>
+                        <i class="bx bx-rotate-cw"></i> <span id="track-name" aria-live="polite"></span> <span><output
+                                id="display-position" for="range-position" class="display-position"
+                                value="--:--">--:--</output> / <output id="display-duration" for="range-position"
+                                class="display-duration" value="--:--">--:--</output></span>
                     </label>
                     <input type="range" name="range-position" id="range-position" class="input-range range-position"
                         min="0" max="1" step="1" value="0"
