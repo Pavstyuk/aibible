@@ -12,6 +12,18 @@ class Player {
         this.positionDisplay = document.getElementById("display-position");
         this.positionInput = document.getElementById("range-position");
         this.durationDisplay = document.getElementById("display-duration");
+        this.nameElement = document.getElementById("track-name");
+        this.trackName = "";
+
+        this.audio.addEventListener("ended", () => {
+            if (!this.playNext()) {
+                this.setPlayPauseButtonState("pause");
+            }
+        });
+        this.audio.addEventListener("timeupdate", () => this.updatePosition());
+        this.audio.addEventListener("loadedmetadata", () =>
+            this.updateDuration(),
+        );
     }
 
     init() {
@@ -42,31 +54,27 @@ class Player {
     }
 
     playAudio() {
-        this.audio.play();
+        const playPromise = this.audio.play();
         this.setPlayPauseButtonState("play");
-        this.audio.onended = () => {
-            this.playNext();
-        };
-        this.audio.ontimeupdate = () => {
-            this.updatePosition();
-        };
+
+        if (playPromise !== undefined) {
+            playPromise.catch((error) => {
+                if (error.name === "AbortError") return;
+                console.error("Не удалось воспроизвести трек:", error);
+                this.setPlayPauseButtonState("pause");
+            });
+        }
     }
 
     pauseAudio() {
         this.audio.pause();
         this.setPlayPauseButtonState("pause");
-        this.audio.addEventListener("ended", () => {
-            this.playNext();
-        });
     }
 
     playThisTrack(element) {
-        var link = element.dataset.link;
-        var num = element.dataset.num;
-        this.audio.src = link;
-        this.audio.currentTime = 0;
+        this.audio.src = element.dataset.link;
         this.setSpeed(this.speed);
-        this.setTrackActive(num);
+        this.setTrackActive(element.dataset.num);
         this.playAudio();
     }
 
@@ -85,14 +93,14 @@ class Player {
         var trackButtons = document.querySelectorAll(
             "#track-list .track-button",
         );
-        trackButtons.forEach(function (button) {
+        trackButtons.forEach((button) => {
             if (button.dataset.num == num) {
                 button.setAttribute("data-state", "active");
+                this.updateName(button);
             } else {
                 button.setAttribute("data-state", "none");
             }
         });
-        this.setDuration();
         this.updatePosition();
         this.trackNum = num;
         localStorage.setItem("currentTrack", num);
@@ -122,35 +130,28 @@ class Player {
 
     playNext() {
         var nextTrack = Number(this.trackNum) + 1;
-        if (document.querySelector(`[data-num="${nextTrack}"]`)) {
-            this.trackNum = nextTrack;
-            this.playThisTrack(
-                document.querySelector(`[data-num="${this.trackNum}"]`),
-            );
-        } else {
-            return false;
-        }
+        var nextElement = document.querySelector(`[data-num="${nextTrack}"]`);
+        if (!nextElement) return false;
+
+        this.playThisTrack(nextElement);
+        return true;
     }
 
     playPrev() {
         var prevTrack = Number(this.trackNum) - 1;
-        if (document.querySelector(`[data-num="${prevTrack}"]`)) {
-            this.trackNum = prevTrack;
-            this.playThisTrack(
-                document.querySelector(`[data-num="${this.trackNum}"]`),
-            );
-        } else {
-            return false;
-        }
+        var prevElement = document.querySelector(`[data-num="${prevTrack}"]`);
+        if (!prevElement) return false;
+
+        this.playThisTrack(prevElement);
+        return true;
     }
 
-    setDuration() {
-        this.audio.onloadedmetadata = () => {
-            var second = this.audio.duration;
-            console.log("Duration: " + second);
-            this.durationDisplay.value = this.formatTime(second);
-            this.positionInput.max = this.audio.duration;
-        };
+    updateDuration() {
+        var seconds = this.audio.duration;
+        if (!Number.isFinite(seconds)) return;
+
+        this.durationDisplay.value = this.formatTime(seconds);
+        this.positionInput.max = seconds;
     }
 
     setPosition(val) {
@@ -163,10 +164,20 @@ class Player {
         this.positionInput.value = this.audio.currentTime;
     }
 
+    updateName(track) {
+        this.trackName = track.textContent.trim();
+        if (this.nameElement) {
+            this.nameElement.textContent = `${this.trackName}:`;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     formatTime(seconds) {
         if (isNaN(seconds)) return "0:00";
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60)
+        var mins = Math.floor(seconds / 60);
+        var secs = Math.floor(seconds % 60)
             .toString()
             .padStart(2, "0");
         return `${mins}:${secs}`;
